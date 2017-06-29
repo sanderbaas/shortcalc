@@ -7,12 +7,25 @@ class Plugin implements PluginInterface {
 	public function __construct($slug) {
 		$this->plugin_slug = $slug;
 		add_action( 'init', array( $this, 'loadPluginTextdomain' ) );
+		$this->addShortcodes();
 	}
 
 	static function install() {
 	}
 
 	static function uninstall() {
+	}
+
+	private function addShortcodes() {
+		add_shortcode('shortcalc_calculator', array($this, 'runShortcodeCalculator'));
+	}
+
+	function runShortcodeCalculator($atts) {
+		// todo: get default type from available calculators
+		$a = shortcode_atts( array(
+			'type' => 'no type',
+		), $atts, 'shortcalc_calculator' );
+		return "CALCULATOR of type " . $a['type'];
 	}
 
 	public function loadPluginTextdomain () {
