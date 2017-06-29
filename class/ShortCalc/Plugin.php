@@ -9,6 +9,12 @@ class Plugin implements PluginInterface {
 		add_action( 'init', array( $this, 'loadPluginTextdomain' ) );
 	}
 
+	static function install() {
+	}
+
+	static function uninstall() {
+	}
+
 	public function loadPluginTextdomain () {
 		if(!session_id()) {
 			session_start();

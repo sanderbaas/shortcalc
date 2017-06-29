@@ -22,5 +22,8 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-$plugin = IoC::getPluginInstance('shortcalc');
+register_activation_hook(__FILE__, array('ShortCalc\Plugin', 'install' ) );
+register_deactivation_hook(__FILE__, array('ShortCalc\Plugin', 'uninstall' ) );
+
+add_action( 'plugins_loaded', array( 'ShortCalc\IoC', 'getPluginInstance' ) );
 ?>
