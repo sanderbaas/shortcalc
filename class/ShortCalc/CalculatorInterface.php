@@ -17,8 +17,9 @@ then a result formatter would be cool. Also build this 'plugin' style
 make it possible to add calculators as postType, but also as yaml (with d.i. we can handle these
 different sources)
 */
-class Calculator {
-	public function __construct($type, $elements = array(), $formula = '' ) {
-		
-	}
+interface CalculatorInterface {
+	public function __construct(String $name);
+	public static function find(String $name);
+	public function renderForm(String $view = null);
+	public function renderResult(String $view = null);
 }

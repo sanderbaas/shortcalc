@@ -14,8 +14,12 @@ Author URI: https://www.implode.nl/
 
 namespace ShortCalc;
 
+require 'vendor/autoload.php';
+
 spl_autoload_register(function ($class_name) {
-	include __DIR__ . '/class/' . str_replace('\\', '/', $class_name) . '.php';
+	$filename = __DIR__ . '/class/' . str_replace('\\', '/', $class_name) . '.php';
+	$filename = apply_filters('shortcalc_autoload_register', $filename, $class_name);
+	include($filename);
 });
 
 if ( ! defined( 'WPINC' ) ) {

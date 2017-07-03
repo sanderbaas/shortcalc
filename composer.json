@@ -1,0 +1,5 @@
+{
+    "require": {
+        "mormat/php-formula-interpreter": "^1.0"
+    }
+}
