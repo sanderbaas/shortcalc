@@ -33,11 +33,19 @@ class IoC {
 		// find out which implementations of CalculatorInterface are defined
 		// and then do a find on each static classes for $name
 		$plugin = self::$pluginInstance;
-		$allClasses = $plugin->implementations;
-		foreach ($allClasses as $cls) {
-			error_log($cls);
-			call_user_func($cls . '::find', $name);
-			//$cls::find($name);
+		$implementations = $plugin->implementations;
+		foreach ($implementations['calculators'] as $cls) {
+			$foundCalculator = call_user_func($cls . '::find', $name);
+			if ($foundCalculator) { return $foundCalculator; }
 		}
+		return false;
+	}
+
+	public function newCalculator($name, $className) {
+		return new $className($name);
+	}
+
+	public function newFormulaParser($className) {
+		return new $className;
 	}
 }

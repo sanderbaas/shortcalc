@@ -1,5 +1,5 @@
 {
     "require": {
-        "mormat/php-formula-interpreter": "^1.0"
+        "rezzza/formulate": "^1.0"
     }
 }

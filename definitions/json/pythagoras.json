@@ -1,0 +1,36 @@
+{
+	"name": "pythagoras",
+	"title": "Pythagoras",
+	"formulaParser": "\\ShortCalc\\FormulaParsers\\HoaMath",
+	"formula": "sqrt(pow({{a}},2) + pow({{b}},2))",
+	"parameters": {
+		"a": {
+			"label": "A",
+			"attributes": {
+				"required": true
+			}
+		},
+		"b": {
+			"label": "B",
+			"attributes": {
+				"required": true
+			}
+		},
+		"test": {
+			"options": {
+				"1": "One",
+				"2": "Two",
+				"3": "Three"
+			},
+			"attributes": {
+				"element": "select"
+			}
+		},
+		"submit": {
+			"attributes": {
+				"value": "Calculate!",
+				"type": "submit"
+			}
+		}
+	}
+}

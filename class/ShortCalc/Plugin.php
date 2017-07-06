@@ -14,10 +14,9 @@ class Plugin {
 		add_action('init', array($this,'init'));
 	}
 
-	public function registerImplementations($classNames) {
-		if (!is_array($classNames)) { $classNames = array($classNames); }
-		foreach ($classNames as $className) {
-			$this->implementations[] = $className;
+	public function registerImplementations($implementations) {
+		foreach ($implementations as $key => $classNames) {
+			$this->implementations[$key] = $classNames;
 		}
 	}
 
@@ -27,9 +26,14 @@ class Plugin {
 		$this->registerTaxonomies();
 
 		$implementations = array(
-			'ShortCalc\Calculators\WPPostCalculator',
-			'ShortCalc\Calculators\YAMLCalculator',
-			'ShortCalc\Calculators\JsonCalculator',
+			'calculators' => array(
+				'ShortCalc\Calculators\WPPostCalculator',
+				'ShortCalc\Calculators\YAMLCalculator',
+				'ShortCalc\Calculators\JsonCalculator',
+			),
+			'formulaParsers' => array(
+				'ShortCalc\FormulaParsers\HoaMath',
+			)
 		);
 		$implementations = apply_filters('shortcalc_register_implementations', $implementations);
 
@@ -67,7 +71,6 @@ class Plugin {
 	}
 
 	function runShortcodeCalculator($atts) {
-		error_log('run shortcode calc');
 		// todo: get default type from available calculators
 		$a = shortcode_atts( array(
 			'type' => 'no type',
@@ -76,9 +79,7 @@ class Plugin {
 		// consult IoC to request calculator by type
 		$calculator = IoC::getCalculator($atts['type']);
 		// set default values, from $atts?
-		return "bla";
 		return $calculator->renderForm();
-		//return "CALCULATOR of type " . $a['type'];
 	}
 
 	public function loadPluginTextdomain() {
