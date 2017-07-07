@@ -12,6 +12,8 @@ class Plugin {
 	public function __construct($slug) {
 		$this->plugin_slug = $slug;
 		add_action('init', array($this,'init'));
+		add_action('wp_ajax_get_calculator_result', array($this, 'getCalculatorResult'));
+		add_action('wp_ajax_nopriv_get_calculator_result', array($this, 'getCalculatorResult'));
 	}
 
 	public function registerImplementations($implementations) {
@@ -21,6 +23,12 @@ class Plugin {
 	}
 
 	public function init() {
+		wp_enqueue_script('shortcalc-js', plugins_url("../../js/shortcalc.js", __FILE__) ,array('jquery','wp-util'));
+		$ajax_object = array(
+			'ajax_url' => admin_url('admin-ajax.php')
+		);
+		wp_localize_script( 'shortcalc-js', 'ajax_object', $ajax_object);
+
 		$this->loadPluginTextdomain();
 		$this->registerPostTypes();
 		$this->registerTaxonomies();
@@ -80,6 +88,13 @@ class Plugin {
 		$calculator = IoC::getCalculator($atts['type']);
 		// set default values, from $atts?
 		return $calculator->renderForm();
+	}
+
+	public function getCalculatorResult() {
+		$type = $_POST['calculator_type'];
+		// consult IoC to request calculator by type
+		$calculator = IoC::getCalculator($type);
+		return $calculator->renderResult($_POST);
 	}
 
 	public function loadPluginTextdomain() {

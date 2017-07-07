@@ -16,19 +16,9 @@
 				"required": true
 			}
 		},
-		"test": {
-			"options": {
-				"1": "One",
-				"2": "Two",
-				"3": "Three"
-			},
-			"attributes": {
-				"element": "select"
-			}
-		},
 		"submit": {
 			"attributes": {
-				"value": "Calculate!",
+				"value": "Find C",
 				"type": "submit"
 			}
 		}

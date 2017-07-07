@@ -14,3 +14,8 @@
 <?php endif; ?>
 <?php endforeach; ?>
 </form>
+<div id="shortcalc-form-result-<?php echo $name;?>"></div>
+
+<script type="text/html" id="tmpl-calculator-result-<?php echo $name;?>">
+   <p>{{data.result}}</p>
+</script>

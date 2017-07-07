@@ -21,5 +21,5 @@ interface CalculatorInterface {
 	public function __construct(String $name);
 	public static function find(String $name);
 	public function renderForm(String $view = null);
-	public function renderResult(String $view = null);
+	public function renderResult();
 }

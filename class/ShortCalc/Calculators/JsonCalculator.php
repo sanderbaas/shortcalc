@@ -59,12 +59,12 @@ class JsonCalculator implements CalculatorInterface {
 		return ob_get_clean();
 	}
 
-	public function renderResult(String $view = null) {
+	public function renderResult() {
 		$this->formulaParser->setFormula($this->formula);
 		foreach ($this->parameters as $key => $param) {
-			$value = $_POST[$param->attributes->name];
+			$value = $_POST['parameters'][$param->attributes->name];
 			$this->formulaParser->setParameter($key,$value);
 		}
-		return $this->formulaParser->getResult();
+		echo $this->formulaParser->getResult();
 	}
 }
