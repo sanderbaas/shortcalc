@@ -1,5 +1,6 @@
 {
     "require": {
-        "rezzza/formulate": "^1.0"
+        "rezzza/formulate": "^1.0",
+        "webdevstudios/cmb2": "^2.2"
     }
 }
