@@ -12,6 +12,9 @@ class YAMLCalculator implements CalculatorInterface {
 		
 	}
 
+	public static function wpInit() {
+	}
+
 	public static function find(String $name) {
 		error_log('yaml find: ' . $name);
 	}

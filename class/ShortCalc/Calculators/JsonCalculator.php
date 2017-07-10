@@ -13,6 +13,9 @@ class JsonCalculator implements CalculatorInterface {
 		$this->name = $name;
 	}
 
+	public static function wpInit() {
+	}
+
 	public static function find(String $name) {
 		$contents = file_get_contents("/var/www/shortcalc/wp-content/plugins/shortcalc/definitions/json/pythagoras.json");
 		$contents = utf8_encode($contents);
