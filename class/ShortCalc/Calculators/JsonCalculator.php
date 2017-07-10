@@ -22,12 +22,13 @@ class JsonCalculator implements CalculatorInterface {
 		$calculator->formula = $json->formula;
 		$calculator->formulaParser = IoC::newFormulaParser($json->formulaParser);
 		$calculator->parameters = $json->parameters;
+
 		foreach ($calculator->parameters as $key => $param) {
-			if (empty($param->attributes)) { $param->attributes = new stdClass(); }
+			if (empty($param->attributes)) { $param->attributes = new \stdClass(); }
 			if (empty($param->attributes->id)) { $param->attributes->id = $key;}
 			if (empty($param->attributes->name)) { $param->attributes->name = $key;}
-			if (empty($param->attributes->element)) { $param->attributes->element = 'input';}
-			if ($param->attributes->element == 'input' && empty($param->attributes->type)) {
+			if (empty($param->element)) { $param->element = 'input';}
+			if ($param->element == 'input' && empty($param->attributes->type)) {
 				$param->attributes->type = 'text';
 			}
 			$param->allAttributes = "";
@@ -35,7 +36,7 @@ class JsonCalculator implements CalculatorInterface {
 				$param->allAttributes .= "$name=\"$value\" ";
 			}
 			if (empty($param->label) && $param->attributes->type !== 'submit'
-				&& $param->attributes->element !== 'button') {
+				&& $param->element !== 'button') {
 				$param->label = $key;
 			}
 		}
