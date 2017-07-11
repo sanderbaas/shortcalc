@@ -43,6 +43,7 @@ class JsonCalculator implements CalculatorInterface {
 				$param->label = $key;
 			}
 		}
+
 		return $calculator;
 	}
 
@@ -70,5 +71,6 @@ class JsonCalculator implements CalculatorInterface {
 			$this->formulaParser->setParameter($key,$value);
 		}
 		echo $this->formulaParser->getResult();
+		exit;
 	}
 }

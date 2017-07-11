@@ -16,7 +16,6 @@ class YAMLCalculator implements CalculatorInterface {
 	}
 
 	public static function find(String $name) {
-		error_log('yaml find: ' . $name);
 	}
 
 	public function renderForm(String $view = null) {

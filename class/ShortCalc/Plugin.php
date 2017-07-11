@@ -140,7 +140,7 @@ class Plugin {
 		$type = $_POST['calculator_type'];
 		// consult IoC to request calculator by type
 		$calculator = IoC::getCalculator($type);
-		return $calculator->renderResult($_POST);
+		$calculator->renderResult($_POST);
 	}
 
 	public function loadPluginTextdomain() {
