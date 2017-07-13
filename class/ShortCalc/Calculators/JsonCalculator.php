@@ -3,19 +3,7 @@ namespace ShortCalc\Calculators;
 use \ShortCalc\CalculatorInterface;
 use \ShortCalc\IoC;
 
-class JsonCalculator implements CalculatorInterface {
-	public $name;
-	public $parameters;
-	public $formula;
-	public $formulaParser;
-
-	public function __construct(String $name) {
-		$this->name = $name;
-	}
-
-	public static function wpInit() {
-	}
-
+class JsonCalculator extends CalculatorCore implements CalculatorInterface {
 	public static function find(String $name) {
 		$contents = file_get_contents("/var/www/shortcalc/wp-content/plugins/shortcalc/definitions/json/pythagoras.json");
 		$contents = utf8_encode($contents);
@@ -45,32 +33,5 @@ class JsonCalculator implements CalculatorInterface {
 		}
 
 		return $calculator;
-	}
-
-	public function renderForm(String $view = null) {
-		// determine template, todo: make trait of it
-		$template = __DIR__ . '/../../../views/content-calculator-form.php';
-		$override = locate_template(array(
-			'shortcalc/content-calculator-form.php',
-			'shortcalc/content-calculator-form-'.$this->name.'.php',
-			'content-calculator-form.php',
-			'content-calculator-form-'.$this->name.'.php',
-		));
-		$template = $override ? $override : $template;
-		set_query_var('name', $this->name);
-		set_query_var('parameters', $this->parameters);
-		ob_start();
-		load_template($template, false);
-		return ob_get_clean();
-	}
-
-	public function renderResult() {
-		$this->formulaParser->setFormula($this->formula);
-		foreach ($this->parameters as $key => $param) {
-			$value = $_POST['parameters'][$param->attributes->name];
-			$this->formulaParser->setParameter($key,$value);
-		}
-		echo $this->formulaParser->getResult();
-		exit;
 	}
 }
