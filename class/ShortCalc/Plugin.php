@@ -125,20 +125,19 @@ class Plugin {
 	}
 
 	function runShortcodeCalculator($atts) {
-		// todo: get default type from available calculators
 		$a = shortcode_atts( array(
-			'type' => 'no type',
+			'name' => '',
 		), $atts, 'shortcalc_calculator' );
 
 		// consult IoC to request calculator by type
-		$calculator = IoC::getCalculator($atts['type']);
+		$calculator = IoC::findCalculator($atts['name']);
 		// set default values, from $atts?
 		return $calculator->renderForm();
 	}
 
 	public function getCalculatorResult() {
-		$type = $_POST['calculator_type'];
-		// consult IoC to request calculator by type
+		$name = $_POST['calculator_name'];
+		// consult IoC to request calculator by name
 		$calculator = IoC::getCalculator($type);
 		$calculator->renderResult($_POST);
 	}

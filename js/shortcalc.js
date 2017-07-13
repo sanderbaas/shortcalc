@@ -13,7 +13,7 @@ jq(function($){
 		//calculator_type in $_POST that is formName
 		var data = {
 			'action': 'get_calculator_result',
-			'calculator_type': formName,
+			'calculator_name': formName,
 			'parameters': {}
 		};
 
