@@ -35,13 +35,6 @@ class WPPostCalculator implements CalculatorInterface {
 			$options[$value] = $value;
 		}
 
-		$cmb->add_field(array(
-			'name' => 'Formula Parser',
-			'id'   => $prefix . 'formula_parser',
-			'type' => 'select',
-			'options' => $options
-		) );
-
 		$cmb->add_field( array(
 			'name'       => esc_html__( 'Formula', $domain ),
 			'desc'       => esc_html__( 'Formula parsable by Formula Parser above. Docs: https://hoa-project.net/En/Literature/Hack/Math.html', $domain ),
@@ -50,9 +43,17 @@ class WPPostCalculator implements CalculatorInterface {
 			'column' => true,
 		) );
 
+		$cmb->add_field(array(
+			'name' => 'Formula Parser',
+			'id'   => $prefix . 'formula_parser',
+			'type' => 'select',
+			'options' => $options
+		) );
+
 		$group_parameters = $cmb->add_field( array(
 			'id'          => $prefix . 'parameters',
 			'type'        => 'group',
+			'description' => __('Parameter meta data', $domain),
 			// 'repeatable'  => false, // use false if you want non-repeatable group
 			'options'     => array(
 				'group_title'   => __( 'Parameter {#}', $domain ), // since version 1.1.4, {#} gets replaced by row number
@@ -116,8 +117,11 @@ class WPPostCalculator implements CalculatorInterface {
 			$meta = get_post_meta( $calculators[0]->ID, '', true );
 
 			// convert parameters to json array
-			$parametersSerialized = $meta['shortcalc_parameters'][0];
-			$arrParameters = unserialize($parametersSerialized);
+			$arrParameters = array();
+			if (!empty($meta['shortcalc_parameters'][0])) {
+				$parametersSerialized = $meta['shortcalc_parameters'][0];
+				$arrParameters = unserialize($parametersSerialized);
+			}
 
 			$parameters = new \StdClass;
 			foreach ($arrParameters as $key => $param) {
