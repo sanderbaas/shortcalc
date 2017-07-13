@@ -1,10 +1,6 @@
 jq = jQuery.noConflict();
 jq(function($){
-	console.log('DOLLAR');	
-	console.log('shortcalc');
-	/**/
-	console.log($('form'));
-	$('form[id^=shortcalc-form-]').submit(function(arg, brg){		
+	$('form[id^=shortcalc-form-]').submit(function(arg, brg){
 		var formId = $(this).attr('id');
 		var formName = formId.replace(/shortcalc-form-/,'');
 		var templateName = 'calculator-result-' + formName;
@@ -18,7 +14,6 @@ jq(function($){
 		};
 
 		var inputs = $(this).find('input, select');
-		//Object.keys(inputs).forEach(function(index){
 		for (var i=0; i<inputs.length; i++){
 			var elmt = inputs[i];
 			data.parameters[$(elmt).attr('name')] = $(elmt).val();
@@ -29,7 +24,6 @@ jq(function($){
 			$('#' + resultId).html( template( { result: response } ) );
 		});
 
-		/**/
 		return false;
 	});
 });
