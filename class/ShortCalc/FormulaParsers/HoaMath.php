@@ -9,8 +9,9 @@ class HoaMath implements FormulaParserInterface {
 	public function __construct() {}
 
 	public function setFormula($formula) {
+		$formula = (string)$formula;
 		$formula = new Formula($formula);
-		$this->formula = (string)$formula;
+		$this->formula = $formula;
 	}
 
 	public function setParameter(String $key, $value) {

@@ -138,7 +138,7 @@ class Plugin {
 	public function getCalculatorResult() {
 		$name = $_POST['calculator_name'];
 		// consult IoC to request calculator by name
-		$calculator = IoC::getCalculator($type);
+		$calculator = IoC::findCalculator($name);
 		$calculator->renderResult($_POST);
 	}
 
