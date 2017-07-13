@@ -5,7 +5,13 @@ use \ShortCalc\IoC;
 
 class JsonCalculator extends CalculatorCore implements CalculatorInterface {
 	public static function find(String $name) {
-		$contents = file_get_contents("/var/www/shortcalc/wp-content/plugins/shortcalc/definitions/json/pythagoras.json");
+		$file = __DIR__ . '/../../../definitions/json/' . sanitize_file_name($name) .'.json';
+		$override = locate_template(array(
+			'shortcalc/calculator-'.sanitize_file_name($name).'.json',
+			'calculator-'.sanitize_file_name($name).'.json',
+		));
+		$file = $override ? $override : $file;
+		$contents = file_get_contents($file);
 		$contents = utf8_encode($contents);
 		$json = json_decode($contents);
 
@@ -18,13 +24,10 @@ class JsonCalculator extends CalculatorCore implements CalculatorInterface {
 			if (empty($param->attributes)) { $param->attributes = new \stdClass(); }
 			if (empty($param->attributes->id)) { $param->attributes->id = $key;}
 			if (empty($param->attributes->name)) { $param->attributes->name = $key;}
+			if (empty($param->attributes->value)) { $param->attributes->value = '';}
 			if (empty($param->element)) { $param->element = 'input';}
 			if ($param->element == 'input' && empty($param->attributes->type)) {
 				$param->attributes->type = 'text';
-			}
-			$param->allAttributes = "";
-			foreach ($param->attributes as $name => $value) {
-				$param->allAttributes .= "$name=\"$value\" ";
 			}
 			if (empty($param->label) && $param->attributes->type !== 'submit'
 				&& $param->element !== 'button') {

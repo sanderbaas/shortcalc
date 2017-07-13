@@ -146,17 +146,21 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 				if (empty($param->attributes)) { $param->attributes = new \stdClass(); }
 				if (empty($param->attributes->id)) { $param->attributes->id = $key;}
 				if (empty($param->attributes->name)) { $param->attributes->name = $param->name;}
+				if (empty($param->attributes->value)) { $param->attributes->value = '';}
 				if (empty($param->element)) { $param->element = 'input';}
 				if ($param->element == 'input' && empty($param->attributes->type)) {
 					$param->attributes->type = 'text';
 				}
-				$param->allAttributes = "";
-				foreach ($param->attributes as $name => $value) {
-					$param->allAttributes .= "$name=\"$value\" ";
-				}
+
 				if (empty($param->label) && $param->attributes->type !== 'submit'
 					&& $param->element !== 'button') {
 					$param->label = $key;
+				}
+
+				// replace param_ keys of these parameters with correct name
+				if ($param->attributes->name !== $key) {
+					$calculator->parameters->{$param->attributes->name} = $param;
+					unset($calculator->parameters->{$key});
 				}
 			}
 

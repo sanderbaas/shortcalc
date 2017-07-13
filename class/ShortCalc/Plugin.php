@@ -9,7 +9,7 @@ class Plugin {
 	 * Constructor for Plugin class.
 	 * @param String $slug Slug to use for textdomain etc
 	 **/
-	public function __construct($slug) {
+	public function __construct($slug) {;
 		$this->plugin_slug = $slug;
 		add_action('init', array($this,'init'));
 		add_action('wp_ajax_get_calculator_result', array($this, 'getCalculatorResult'));
@@ -36,7 +36,6 @@ class Plugin {
 		$implementations = array(
 			'calculators' => array(
 				'ShortCalc\Calculators\WPPostCalculator',
-				'ShortCalc\Calculators\YAMLCalculator',
 				'ShortCalc\Calculators\JsonCalculator',
 			),
 			'formulaParsers' => array(
@@ -129,10 +128,21 @@ class Plugin {
 			'name' => '',
 		), $atts, 'shortcalc_calculator' );
 
+		// default values
+		$defaults = array_filter($atts, function($val, $key){
+			return preg_match('/^param_/', $key) == 1;
+		}, ARRAY_FILTER_USE_BOTH);
+
+		// remove prefix
+		$params = [];
+		foreach($defaults as $key => $value) {
+			$params[preg_filter('/^param_/','',$key)] = $value;
+		}
+
 		// consult IoC to request calculator by type
-		$calculator = IoC::findCalculator($atts['name']);
+		$calculator = IoC::findCalculator($a['name']);
 		// set default values, from $atts?
-		return $calculator->renderForm();
+		return $calculator->renderForm($params);
 	}
 
 	public function getCalculatorResult() {
@@ -145,7 +155,11 @@ class Plugin {
 	public function loadPluginTextdomain() {
 		$domain = $this->plugin_slug;
 		$locale = apply_filters('plugin_locale', get_locale(), $domain);
-		load_textdomain($domain, trailingslashit(WP_LANG_DIR) . $domain . '/' . $domain . '-' . $locale . '.mo');
+		$moFile = trailingslashit(WP_LANG_DIR)
+					.sanitize_file_name($domain) . '/'
+					.sanitize_file_name($domain) . '-'
+					.sanitize_file_name($locale) . '.mo';
+		load_textdomain($domain, $moFile );
 		load_plugin_textdomain($domain, FALSE, basename(plugin_dir_path(dirname(__FILE__ ))) . '/languages/');
 	}
 }

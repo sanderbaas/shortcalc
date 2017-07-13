@@ -7,8 +7,10 @@
 <?php endif; ?>
 <?php if ($parameter->element == 'select'): ?>
 <select <?php echo $parameter->allAttributes;?>>
-<?php foreach ($parameter->options as $val => $option):?>
-<option value="<?php echo $val;?>"><?php echo $option;?></option>
+<?php foreach ($parameter->options as $option):?>
+<option value="<?php echo $option;?>" <?php selected($parameter->attributes->value, $option); ?>>
+	<?php echo $option;?>
+</option>
 <?php endforeach; ?>
 </select>
 <?php endif; ?>
