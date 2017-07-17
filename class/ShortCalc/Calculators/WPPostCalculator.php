@@ -171,7 +171,7 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 				foreach ($attributes as $attr) {
 					$parts = explode('=', $attr);
 					if (sizeof($parts)>1) {
-						$clsParam->attributes->{$parts[0]} = $parts[1];
+						$clsParam->attributes->{$parts[0]} = trim($parts[1],"\"'");
 					}
 					if (sizeof($parts)==1) {
 						$clsParam->attributes->{$parts[0]} = true;
@@ -197,6 +197,7 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 				if (empty($param->label)) { $param->label = '';}
 				if (empty($param->prefix)) { $param->prefix = '';}
 				if (empty($param->postfix)) { $param->postfix = '';}
+
 				if ($param->element == 'input' && empty($param->attributes->type)) {
 					$param->attributes->type = 'text';
 				}
