@@ -1,8 +1,7 @@
 <form name="<?php echo $name; ?>" id="shortcalc-form-<?php echo $name;?>">
 <?php foreach ($parameters as $key => $parameter):?>
+<label for="<?php echo $parameter->attributes->id;?>"><?php echo $parameter->label;?></label>
 <?php if ($parameter->element == 'input'): ?>
-<label for="<?php echo $parameter->attributes->id;?>">
-<?php echo $parameter->label;?></label>
 <?php echo $parameter->prefix; ?><input <?php echo $parameter->allAttributes;?> /><?php echo $parameter->postfix; ?>
 <?php endif; ?>
 <?php if ($parameter->element == 'select'): ?>

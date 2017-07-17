@@ -39,7 +39,7 @@ class CalculatorCore implements CalculatorInterface {
 		set_query_var('result_postfix', $this->resultPostfix);
 		ob_start();
 		load_template($template, false);
-		return ob_get_clean();
+		return str_replace("\n","",ob_get_clean());
 	}
 
 	private function aggregateAttributes($parameters) {
