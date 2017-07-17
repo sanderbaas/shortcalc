@@ -11,6 +11,7 @@ class JsonCalculator extends CalculatorCore implements CalculatorInterface {
 			'calculator-'.sanitize_file_name($name).'.json',
 		));
 		$file = $override ? $override : $file;
+		if (!is_file($file)) { return false; }
 		$contents = file_get_contents($file);
 		$contents = utf8_encode($contents);
 		$json = json_decode($contents);

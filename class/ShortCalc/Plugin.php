@@ -141,6 +141,7 @@ class Plugin {
 
 		// consult IoC to request calculator by type
 		$calculator = IoC::findCalculator($a['name']);
+		if (!$calculator) { return false; }
 		// set default values, from $atts?
 		return $calculator->renderForm($params);
 	}

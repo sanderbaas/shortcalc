@@ -48,6 +48,17 @@ class CalculatorCore implements CalculatorInterface {
 		return $parameters;
 	}
 
+	/**
+	 * Merge predefined parameters with shortcode parameters.
+	 * It is possible to supply values to the defined parameters
+	 * via shortcode attributes. This functions puts the values
+	 * in the right parameter, optionally overriding predefined
+	 * default values
+	 *
+	 * @param object $parameters Predefined calculator parameters.
+	 * @param array $overrides Parameters from shortcode attributes.
+	 * @return object Predefined calculator parameters overridden with shortcode parameters.
+	 */
 	private function mergeParameters($parameters, $overrides) {
 		foreach ($overrides as $key => $value) {
 			if (!empty($parameters->{$key})) {
