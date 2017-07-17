@@ -8,6 +8,14 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		add_action( 'cmb2_admin_init', array('ShortCalc\Calculators\WPPostCalculator', 'registerMetabox'));
 	}
 
+	function sanitizeText($str) {
+		// restore leading and trailing space (just one)
+		$filtered = sanitize_text_field($str);
+		if (substr($str,0,1) == " ") { $filtered = ' ' . $filtered; }
+		if (substr($str,-1) == " ") { $filtered = $filtered . ' '; }
+		return $filtered;
+	}
+
 	public function registerMetabox() {
 		$plugin = IoC::getPluginInstance();
 
@@ -39,6 +47,24 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 			'id'   => $prefix . 'formula_parser',
 			'type' => 'select',
 			'options' => $options
+		) );
+
+		$cmb->add_field( array(
+			'name'       => esc_html__( 'Result Prefix', $domain ),
+			'desc'       => esc_html__( 'Text to put before result', $domain ),
+			'id'         => $prefix . 'result_prefix',
+			'type'       => 'text',
+			'sanitization_cb' => array('ShortCalc\Calculators\WPPostCalculator', 'sanitizeText'),
+			'column' => true,
+		) );
+
+		$cmb->add_field( array(
+			'name'       => esc_html__( 'Result Postfix', $domain ),
+			'desc'       => esc_html__( 'Text to put after result', $domain ),
+			'id'         => $prefix . 'result_postfix',
+			'type'       => 'text',
+			'sanitization_cb' => array('ShortCalc\Calculators\WPPostCalculator', 'sanitizeText'),
+			'column' => true,
 		) );
 
 		$group_parameters = $cmb->add_field( array(
@@ -81,6 +107,22 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		) );
 
 		$cmb->add_group_field( $group_parameters, array(
+			'name' => 'Prefix',
+			'id'   => 'prefix',
+			'description' => __('Text to put before field on form', $domain),
+			'sanitization_cb' => array('ShortCalc\Calculators\WPPostCalculator', 'sanitizeText'),
+			'type' => 'text',
+		) );
+
+		$cmb->add_group_field( $group_parameters, array(
+			'name' => 'Postfix',
+			'id'   => 'postfix',
+			'description' => __('Text to put after field on form', $domain),
+			'sanitization_cb' => array('ShortCalc\Calculators\WPPostCalculator', 'sanitizeText'),
+			'type' => 'text',
+		) );
+
+		$cmb->add_group_field( $group_parameters, array(
 			'name' => 'Attributes',
 			'description' => __('HTML attributes, for example: value="Foo" required type="submit"', $domain),
 			'id'   => 'attributes',
@@ -119,6 +161,8 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 				$clsParam = new \StdClass;
 				$clsParam->element = $param['element'];
 				$clsParam->label = $param['label'];
+				$clsParam->prefix = $param['prefix'];
+				$clsParam->postfix = $param['postfix'];
 				$clsParam->name = $param['name'];
 				$clsParam->attributes = new \StdClass;
 
@@ -138,6 +182,8 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 
 			$calculator = IoC::newCalculator($name, __CLASS__);
 			$calculator->formula = $meta['shortcalc_formula'][0];
+			$calculator->resultPrefix = $meta['shortcalc_result_prefix'][0];
+			$calculator->resultPostfix = $meta['shortcalc_result_postfix'][0];
 			$formulaParser = $meta['shortcalc_formula_parser'][0];
 			$calculator->formulaParser = IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\' . $formulaParser);
 			$calculator->parameters = $parameters;
@@ -148,6 +194,9 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 				if (empty($param->attributes->name)) { $param->attributes->name = $param->name;}
 				if (empty($param->attributes->value)) { $param->attributes->value = '';}
 				if (empty($param->element)) { $param->element = 'input';}
+				if (empty($param->label)) { $param->label = '';}
+				if (empty($param->prefix)) { $param->prefix = '';}
+				if (empty($param->postfix)) { $param->postfix = '';}
 				if ($param->element == 'input' && empty($param->attributes->type)) {
 					$param->attributes->type = 'text';
 				}

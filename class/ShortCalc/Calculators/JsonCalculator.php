@@ -18,6 +18,8 @@ class JsonCalculator extends CalculatorCore implements CalculatorInterface {
 
 		$calculator = IoC::newCalculator($name, __CLASS__);
 		$calculator->formula = $json->formula;
+		$calculator->resultPrefix = !empty($json->resultPrefix) ? $json->resultPrefix : '';
+		$calculator->resultPostfix = !empty($json->resultPostfix) ? $json->resultPostfix : '';
 		$calculator->formulaParser = IoC::newFormulaParser($json->formulaParser);
 		$calculator->parameters = $json->parameters;
 
@@ -27,6 +29,9 @@ class JsonCalculator extends CalculatorCore implements CalculatorInterface {
 			if (empty($param->attributes->name)) { $param->attributes->name = $key;}
 			if (empty($param->attributes->value)) { $param->attributes->value = '';}
 			if (empty($param->element)) { $param->element = 'input';}
+			if (empty($param->label)) { $param->label = '';}
+			if (empty($param->prefix)) { $param->prefix = '';}
+			if (empty($param->postfix)) { $param->postfix = '';}
 			if ($param->element == 'input' && empty($param->attributes->type)) {
 				$param->attributes->type = 'text';
 			}

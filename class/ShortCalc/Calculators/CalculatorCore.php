@@ -6,6 +6,8 @@ use \ShortCalc\IoC;
 class CalculatorCore implements CalculatorInterface {
 	public $name;
 	public $parameters;
+	public $resultPrefix;
+	public $resultPostfix;
 	public $formula;
 	public $formulaParser;
 
@@ -33,6 +35,8 @@ class CalculatorCore implements CalculatorInterface {
 
 		set_query_var('name', $this->name);
 		set_query_var('parameters', $parameters);
+		set_query_var('result_prefix', $this->resultPrefix);
+		set_query_var('result_postfix', $this->resultPostfix);
 		ob_start();
 		load_template($template, false);
 		return ob_get_clean();
