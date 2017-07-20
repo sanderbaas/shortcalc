@@ -152,8 +152,13 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 			// convert parameters to json array
 			$arrParameters = array();
 			if (!empty($meta['shortcalc_parameters'][0])) {
+				// due to a bug in CMB2 this is never not empty
+				// so check if there is only 1 empty parameter
 				$parametersSerialized = $meta['shortcalc_parameters'][0];
 				$arrParameters = unserialize($parametersSerialized);
+				if (sizeof($arrParameters)==1 && !isset($arrParameters[0]['name'])) {
+					$arrParameters = array();
+				}
 			}
 
 			$parameters = new \StdClass;
