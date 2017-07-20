@@ -13,6 +13,7 @@ class CalculatorCore implements CalculatorInterface {
 
 	public function __construct(String $name) {
 		$this->name = $name;
+		$this->parameters = new \stdClass();
 	}
 
 	public static function wpInit() {}
@@ -52,12 +53,35 @@ class CalculatorCore implements CalculatorInterface {
 		return $parameters;
 	}
 
-	protected function assignParameters($parameters) {
-		$this->parameters = $parameters;
+	protected static function createParameter($name, $element = 'input', $type = 'text', $value = '') {
+		$param = new \stdClass();
+		$param->element = 'input';
+		$param->attributes = new \stdClass();
+		if ($type !== 'submit') {
+			$param->label = $name;
+			$param->attributes->required = true;
+		}
+		$param->attributes->id = 'shortcalc_'.rand(0,1000000);
+		$param->attributes->name = $name;
+		$param->attributes->type = $type;
+		$param->attributes->value = $value;
+		return $param;
+	}
 
-		foreach ($this->parameters as $key => $param) {
+	protected function assignParameters($parameters) {
+		$plugin = IoC::getPluginInstance();
+		$domain = $plugin->plugin_slug;
+
+		// create default parameters
+		$formulaParameters = $this->formulaParser::extractParameters($this->formula);
+		foreach ($formulaParameters as $formulaParameter){
+			$this->parameters->{$formulaParameter} = self::createParameter($formulaParameter);
+		}
+
+		$processedSubmit = false;
+		foreach ($parameters as $key => $param) {
 			if (empty($param->attributes)) { $param->attributes = new \stdClass(); }
-			if (empty($param->attributes->id)) { $param->attributes->id = $key;}
+			if (empty($param->attributes->id)) { $param->attributes->id = 'shortcalc_'.rand(0,1000000);}
 			if (empty($param->attributes->name)) { $param->attributes->name = $param->name;}
 			if (empty($param->attributes->name)) { $param->attributes->name = $key;}
 			if (empty($param->attributes->value)) { $param->attributes->value = '';}
@@ -75,11 +99,16 @@ class CalculatorCore implements CalculatorInterface {
 				$param->label = $key;
 			}
 
-			// replace param_ keys of these parameters with correct name
-			if ($param->attributes->name !== $key) {
-				$this->parameters->{$param->attributes->name} = $param;
-				unset($this->parameters->{$key});
+			$this->parameters->{$param->attributes->name} = $param;
+
+			if ($param->attributes->type == 'submit') {
+				$processedSubmit = true;
 			}
+		}
+
+		// add submit button if there is not any
+		if (!$processedSubmit) {
+			$this->parameters->submit = self::createParameter('submit', 'input', 'submit', __('Calculate', $domain));
 		}
 	}
 
