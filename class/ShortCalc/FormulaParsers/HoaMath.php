@@ -20,7 +20,7 @@ class HoaMath implements FormulaParserInterface {
 
 	public static function extractParameters($formula) {
 		$formula = (string)$formula;
-		preg_match_all('/\{\{([^\}])*\}\}/', $formula, $matches);
+		preg_match_all('/\{\{([^\}]*)\}\}/', $formula, $matches);
 		return $matches[1];
 	}
 
