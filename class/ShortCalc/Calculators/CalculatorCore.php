@@ -52,6 +52,37 @@ class CalculatorCore implements CalculatorInterface {
 		return $parameters;
 	}
 
+	protected function assignParameters($parameters) {
+		$this->parameters = $parameters;
+
+		foreach ($this->parameters as $key => $param) {
+			if (empty($param->attributes)) { $param->attributes = new \stdClass(); }
+			if (empty($param->attributes->id)) { $param->attributes->id = $key;}
+			if (empty($param->attributes->name)) { $param->attributes->name = $param->name;}
+			if (empty($param->attributes->name)) { $param->attributes->name = $key;}
+			if (empty($param->attributes->value)) { $param->attributes->value = '';}
+			if (empty($param->element)) { $param->element = 'input';}
+			if (empty($param->label)) { $param->label = '';}
+			if (empty($param->prefix)) { $param->prefix = '';}
+			if (empty($param->postfix)) { $param->postfix = '';}
+
+			if ($param->element == 'input' && empty($param->attributes->type)) {
+				$param->attributes->type = 'text';
+			}
+
+			if (empty($param->label) && $param->attributes->type !== 'submit'
+				&& $param->element !== 'button') {
+				$param->label = $key;
+			}
+
+			// replace param_ keys of these parameters with correct name
+			if ($param->attributes->name !== $key) {
+				$this->parameters->{$param->attributes->name} = $param;
+				unset($this->parameters->{$key});
+			}
+		}
+	}
+
 	/**
 	 * Merge predefined parameters with shortcode parameters.
 	 * It is possible to supply values to the defined parameters

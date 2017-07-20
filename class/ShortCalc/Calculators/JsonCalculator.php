@@ -21,25 +21,7 @@ class JsonCalculator extends CalculatorCore implements CalculatorInterface {
 		$calculator->resultPrefix = !empty($json->resultPrefix) ? $json->resultPrefix : '';
 		$calculator->resultPostfix = !empty($json->resultPostfix) ? $json->resultPostfix : '';
 		$calculator->formulaParser = IoC::newFormulaParser($json->formulaParser);
-		$calculator->parameters = $json->parameters;
-
-		foreach ($calculator->parameters as $key => $param) {
-			if (empty($param->attributes)) { $param->attributes = new \stdClass(); }
-			if (empty($param->attributes->id)) { $param->attributes->id = $key;}
-			if (empty($param->attributes->name)) { $param->attributes->name = $key;}
-			if (empty($param->attributes->value)) { $param->attributes->value = '';}
-			if (empty($param->element)) { $param->element = 'input';}
-			if (empty($param->label)) { $param->label = '';}
-			if (empty($param->prefix)) { $param->prefix = '';}
-			if (empty($param->postfix)) { $param->postfix = '';}
-			if ($param->element == 'input' && empty($param->attributes->type)) {
-				$param->attributes->type = 'text';
-			}
-			if (empty($param->label) && $param->attributes->type !== 'submit'
-				&& $param->element !== 'button') {
-				$param->label = $key;
-			}
-		}
+		$calculator->assignParameters($json->parameters);
 
 		return $calculator;
 	}

@@ -186,33 +186,7 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 			$calculator->resultPostfix = $meta['shortcalc_result_postfix'][0];
 			$formulaParser = $meta['shortcalc_formula_parser'][0];
 			$calculator->formulaParser = IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\' . $formulaParser);
-			$calculator->parameters = $parameters;
-
-			foreach ($calculator->parameters as $key => $param) {
-				if (empty($param->attributes)) { $param->attributes = new \stdClass(); }
-				if (empty($param->attributes->id)) { $param->attributes->id = $key;}
-				if (empty($param->attributes->name)) { $param->attributes->name = $param->name;}
-				if (empty($param->attributes->value)) { $param->attributes->value = '';}
-				if (empty($param->element)) { $param->element = 'input';}
-				if (empty($param->label)) { $param->label = '';}
-				if (empty($param->prefix)) { $param->prefix = '';}
-				if (empty($param->postfix)) { $param->postfix = '';}
-
-				if ($param->element == 'input' && empty($param->attributes->type)) {
-					$param->attributes->type = 'text';
-				}
-
-				if (empty($param->label) && $param->attributes->type !== 'submit'
-					&& $param->element !== 'button') {
-					$param->label = $key;
-				}
-
-				// replace param_ keys of these parameters with correct name
-				if ($param->attributes->name !== $key) {
-					$calculator->parameters->{$param->attributes->name} = $param;
-					unset($calculator->parameters->{$key});
-				}
-			}
+			$calculator->assignParameters($parameters);
 
 			return $calculator;
 		}
