@@ -9,11 +9,37 @@ added from a theme (functions.php). The parsing of formula's is
 done with HoaMath, but can also be extended with custom formula
 parsers
 
-## HoaMath
-The formula parser that is included does not have the best documentation.
-It can be found here: https://github.com/hoaproject/Math
+## Shortcode
+This plugin makes the following shortcode available:
+`[shortcalc_calculator name="pythagoras"]`. A `name` must always
+be supplied. Other parameters can be used to add default values
+to the parameters of a calculator form. For example to fill the a-field
+for the pythagoras form do the following:
+`[shortcalc_calculator name="pythagoras" param_a="11"]`.
 
-### Formula's
+## Calculators
+As mentioned, calculators can be defined in two ways, but that can
+be extended by adding custom ways. For all calculators goes that they
+can be defined very detailled, by also defining the fields for the forms.
+That is not neccesary, because when the fields are not defined, they are
+generated.
+
+### Define calculator as WordPress post
+This plugin adds a calulator posttype to WordPress and through this calculators
+can be defined.
+
+### Define calculator as JSON file
+Calculators can be defined in a JSON file. One example is included, this is the
+`pythagoras` calculator. Custom calculators need to be defined in the active
+WordPress theme. Just put the definitions in de root of the theme, or better,
+in the shortcalc subdirectory of it. Use this file format: `calculator-{name}.json`.
+
+## Formula's
+Formula's can be defined using HoaMath. Documentation can be found
+(here)[https://github.com/hoaproject/Math], but the most important features are described
+below.
+
+### Defining formula's with HoaMath
 Formula's consist of variables, constantes, operators and functions. The
 constantes are just numbers like 3.14 or 300000 and can be used as such.
 The variables must be defined enclosed by double curly brackets, like `{{E}}`
@@ -52,7 +78,7 @@ be used: `avg({{a}},4,5,{{b}})`
 * sum
 * tan
 
-## Overriding theme for forms
+## Changing form layout
 It is possible to change the look and feel of the calculator forms.
 To override all calculator forms at once, copy the view from the plugin
 `views/content-calculator-form.php` to the theme directory that is
@@ -67,9 +93,11 @@ change the filename to `content-calculator-form-pythagoras.php`.
 Make sure to leave the id of the form the same, as well as the id for the
 container of the result: `shortcalc-form-result-*`.
 
-#### Template for result area
+### Template for result area
 The layout of the result of the calculation is loaded with ajax and the
 template for this is embedded as a script-tag in the template above.
-````<script type="text/html" id="tmpl-calculator-result-<?php echo $name;?>">````
-````...````
-````</script>````
+```
+<script type="text/html" id="tmpl-calculator-result-<?php echo $name;?>">
+...
+</script>
+```
