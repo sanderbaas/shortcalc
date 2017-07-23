@@ -74,7 +74,8 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 			'options' => array(
 				'group_title' => __('Parameter {#}', $domain),
 				'add_button' => __('Add Another Parameter', $domain),
-				'remove_button' => __('Remove Parameter', $domain)
+				'remove_button' => __('Remove Parameter', $domain),
+				'sortable' => true,
 			),
 		));
 
