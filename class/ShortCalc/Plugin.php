@@ -161,6 +161,6 @@ class Plugin {
 					.sanitize_file_name($domain) . '-'
 					.sanitize_file_name($locale) . '.mo';
 		load_textdomain($domain, $moFile );
-		load_plugin_textdomain($domain, FALSE, basename(plugin_dir_path(dirname(__FILE__ ))) . '/languages/');
+		load_plugin_textdomain($domain, FALSE, basename(plugin_dir_path(dirname(__FILE__,2))) . '/languages/');
 	}
 }

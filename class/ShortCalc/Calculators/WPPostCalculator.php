@@ -43,7 +43,7 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		));
 
 		$cmb->add_field(array(
-			'name' => 'Formula Parser',
+			'name' => __('Formula Parser', $domain),
 			'id' => $prefix . 'formula_parser',
 			'type' => 'select',
 			'options' => $options,
@@ -79,14 +79,14 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		));
 
 		$cmb->add_group_field( $group_parameters, array(
-			'name' => 'Name',
+			'name' => __('Name', $domain),
 			'description' => __('Must match a parameter in the formula', $domain),
 			'id' => 'name',
 			'type' => 'text',
 		));
 
 		$cmb->add_group_field( $group_parameters, array(
-			'name' => 'Type of Element',
+			'name' => __('Type of Element', $domain),
 			'id' => 'element',
 			'type' => 'select',
 			'default' => 'input',
@@ -97,14 +97,14 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		));
 
 		$cmb->add_group_field( $group_parameters, array(
-			'name' => 'Label',
+			'name' => __('Label', $domain),
 			'id' => 'label',
 			'description' => __('The label is used on the calculator frontend', $domain),
 			'type' => 'text',
 		));
 
 		$cmb->add_group_field( $group_parameters, array(
-			'name' => 'Prefix',
+			'name' => __('Prefix', $domain),
 			'id' => 'prefix',
 			'description' => __('Text to put before field on form', $domain),
 			'sanitization_cb' => array('ShortCalc\Calculators\WPPostCalculator', 'sanitizeText'),
@@ -112,7 +112,7 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		));
 
 		$cmb->add_group_field( $group_parameters, array(
-			'name' => 'Postfix',
+			'name' => __('Postfix', $domain),
 			'id' => 'postfix',
 			'description' => __('Text to put after field on form', $domain),
 			'sanitization_cb' => array('ShortCalc\Calculators\WPPostCalculator', 'sanitizeText'),
@@ -120,14 +120,14 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		));
 
 		$cmb->add_group_field( $group_parameters, array(
-			'name' => 'Attributes',
+			'name' => __('Attributes', $domain),
 			'description' => __('HTML attributes, for example: value="Foo" required type="submit"', $domain),
 			'id' => 'attributes',
 			'type' => 'textarea_small',
 		));
 
 		$cmb->add_group_field( $group_parameters, array(
-			'name' => 'Options',
+			'name' => __('Options', $domain),
 			'description' => __('Selectable options for select elements', $domain),
 			'id' => 'options',
 			'type' => 'text',

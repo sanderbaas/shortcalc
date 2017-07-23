@@ -10,6 +10,8 @@ Description: This plugin makes shortcodes available with which calculator forms 
 Author: Sander Baas
 Version: 1.0
 Author URI: https://www.implode.nl/
+Text Domain: shortcalc
+Domain Path: /languages
 */
 
 namespace ShortCalc;
