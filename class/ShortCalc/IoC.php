@@ -13,7 +13,7 @@ class IoC {
 		return self::$pluginInstance;
 	}
 
-	public function findCalculator($name) {
+	public static function findCalculator($name) {
 		$plugin = self::$pluginInstance;
 		$implementations = $plugin->implementations;
 		foreach ($implementations['calculators'] as $cls) {
@@ -23,11 +23,11 @@ class IoC {
 		return false;
 	}
 
-	public function newCalculator($name, $className) {
+	public static function newCalculator($name, $className) {
 		return new $className($name);
 	}
 
-	public function newFormulaParser($className) {
+	public static function newFormulaParser($className) {
 		return new $className;
 	}
 }

@@ -56,6 +56,9 @@ class CalculatorCore implements CalculatorInterface {
 	protected static function createParameter($name, $element = 'input', $type = 'text', $value = '') {
 		$param = new \stdClass();
 		$param->element = 'input';
+		$param->prefix = '';
+		$param->postfix = '';
+		$param->label = '';
 		$param->attributes = new \stdClass();
 		if ($type !== 'submit') {
 			$param->label = $name;
@@ -82,7 +85,9 @@ class CalculatorCore implements CalculatorInterface {
 		foreach ($parameters as $key => $param) {
 			if (empty($param->attributes)) { $param->attributes = new \stdClass(); }
 			if (empty($param->attributes->id)) { $param->attributes->id = 'shortcalc_'.rand(0,1000000);}
-			if (empty($param->attributes->name)) { $param->attributes->name = $param->name;}
+			if (empty($param->attributes->name) && !empty($param->name)) {
+				$param->attributes->name = $param->name;
+			}
 			if (empty($param->attributes->name)) { $param->attributes->name = $key;}
 			if (empty($param->attributes->value)) { $param->attributes->value = '';}
 			if (empty($param->element)) { $param->element = 'input';}

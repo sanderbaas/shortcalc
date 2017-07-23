@@ -16,7 +16,7 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		return $filtered;
 	}
 
-	public function registerMetabox() {
+	public static function registerMetabox() {
 		$plugin = IoC::getPluginInstance();
 
 		$domain = $plugin->plugin_slug;
@@ -162,15 +162,16 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 			$parameters = new \StdClass;
 			foreach ($arrParameters as $key => $param) {
 				$clsParam = new \StdClass;
-				$clsParam->element = $param['element'];
-				$clsParam->label = $param['label'];
-				$clsParam->prefix = $param['prefix'];
-				$clsParam->postfix = $param['postfix'];
-				$clsParam->name = $param['name'];
+				$clsParam->element = isset($param['element']) ? $param['element'] : '';
+				$clsParam->label = isset($param['label']) ? $param['label'] : '';
+				$clsParam->prefix = isset($param['prefix']) ? $param['prefix'] : '';
+				$clsParam->postfix = isset($param['postfix']) ? $param['postfix'] : '';
+				$clsParam->name = isset($param['name']) ? $param['name'] : '';
 				$clsParam->attributes = new \StdClass;
 
 				// split attributes into a class
-				$attributes = explode(' ', $param['attributes']);
+				$attributes = array();
+				if (isset($param['attributes'])) { $attributes = explode(' ', $param['attributes']); }
 				foreach ($attributes as $attr) {
 					$parts = explode('=', $attr);
 					if (sizeof($parts)>1) {
@@ -184,11 +185,21 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 			}
 
 			$calculator = IoC::newCalculator($name, __CLASS__);
-			$calculator->formula = $meta['shortcalc_formula'][0];
-			$calculator->resultPrefix = $meta['shortcalc_result_prefix'][0];
-			$calculator->resultPostfix = $meta['shortcalc_result_postfix'][0];
-			$formulaParser = $meta['shortcalc_formula_parser'][0];
-			$calculator->formulaParser = IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\' . $formulaParser);
+
+			if (!empty($meta['shortcalc_formula'][0])) {
+				$calculator->formula = $meta['shortcalc_formula'][0];
+			}
+			if (!empty($meta['shortcalc_result_prefix'][0])) {
+				$calculator->resultPrefix = $meta['shortcalc_result_prefix'][0];
+			}
+			if (!empty($meta['shortcalc_result_postfix'][0])) {
+				$calculator->resultPrefix = $meta['shortcalc_result_postfix'][0];
+			}
+			if (!empty($meta['shortcalc_formula_parser'][0])) {
+				$formulaParser = $meta['shortcalc_formula_parser'][0];
+				$calculator->formulaParser = IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\' . $formulaParser);
+			}
+
 			$calculator->assignParameters($parameters);
 
 			return $calculator;
