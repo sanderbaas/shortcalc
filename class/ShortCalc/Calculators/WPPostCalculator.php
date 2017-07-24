@@ -224,7 +224,7 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 				$calculator->resultPrefix = $meta['shortcalc_result_prefix'][0];
 			}
 			if (!empty($meta['shortcalc_result_postfix'][0])) {
-				$calculator->resultPrefix = $meta['shortcalc_result_postfix'][0];
+				$calculator->resultPostfix = $meta['shortcalc_result_postfix'][0];
 			}
 			if (!empty($meta['shortcalc_formula_parser'][0])) {
 				$formulaParser = $meta['shortcalc_formula_parser'][0];
