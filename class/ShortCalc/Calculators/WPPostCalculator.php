@@ -17,6 +17,14 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		add_action( 'cmb2_admin_init', array('ShortCalc\Calculators\WPPostCalculator', 'registerMetabox'));
 	}
 
+	/**
+	 * Sanitize a text with default sanitize_text_field, but retain a
+	 * single leading and trailing space when specified.
+	 *
+	 * @param string $str Text to sanitize
+	 *
+	 * @return string Supplied text, sanitized.
+	 **/
 	public static function sanitizeText($str) {
 		// restore leading and trailing space (just one)
 		$filtered = sanitize_text_field($str);
@@ -25,6 +33,12 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		return $filtered;
 	}
 
+	/**
+	 * Register a custom metabox for the custom posttype used by this
+	 * calculator. This metabox contains fields to supply neede settings.
+	 *
+	 * @return void
+	 **/
 	public static function registerMetabox() {
 		$plugin = IoC::getPluginInstance();
 
@@ -145,6 +159,14 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		));
 	}
 
+	/**
+	 * Find calculator implementation for this class.
+	 *
+	 * @param string $name Name of the calculator to find.
+	 *
+	 * @return \Shortcode\Calculators\WPPostCalculator|boolean Return the found
+	 * calculator or false if no calculator is found.
+	 **/
 	public static function find(String $name) {
 		$args=array(
 			'name' => $name,

@@ -3,25 +3,61 @@ namespace ShortCalc\Calculators;
 use \ShortCalc\CalculatorInterface;
 use \ShortCalc\IoC;
 
+/**
+ * Core functionality of calculators. Specific implementations
+ * share this and can override this behaviour.
+ **/
 class CalculatorCore implements CalculatorInterface {
+	/** @var string Name of the calculator. **/
 	public $name;
+	/** @var object Object with all parameters needed for calculation. **/
 	public $parameters;
+	/** @var string Text to put before the result of calculation. **/
 	public $resultPrefix;
+	/** @var string Text to put after the result of calculation. **/
 	public $resultPostfix;
+	/** @var string Formula used to perform calculation. **/
 	public $formula;
+	/** @var mixed Formula parser used to parse formula. **/
 	public $formulaParser;
 
+	/**
+	 * Constructor for this class.
+	 *
+	 * @param string $name Name of the new calculator.
+	 **/
 	public function __construct(String $name) {
 		$this->name = $name;
 		$this->parameters = new \stdClass();
 	}
 
+	/**
+	 * Register calculator specific WordPress behaviour. It will be called on
+	 * the WordPress init trigger. This function should be overridden when needed
+	 * in children.
+	 **/
 	public static function wpInit() {}
 
+	/**
+	 * Find a calculator by name. This core class implementation is empty, but in
+	 * children it shoud be overridden.
+	 *
+	 * @param string $name Name of the calculator to find.
+	 *
+	 * @return boolean In the core class this always returns false.
+	 **/
 	public static function find(String $name) {
 		return false;
 	}
 
+	/**
+	 * Render the frontend form for the calculator.
+	 *
+	 * @param array @params Parameters received from shortcode caller
+	 * to override default values of form fields.
+	 *
+	 * @return string HTML with form of calculator.
+	 **/
 	public function renderForm(Array $params) {
 		$template = __DIR__ . '/../../../views/content-calculator-form.php';
 		$override = locate_template(array(
@@ -43,6 +79,15 @@ class CalculatorCore implements CalculatorInterface {
 		return str_replace("\n","",ob_get_clean());
 	}
 
+	/**
+	 * Walks through supplied parameters and create an allAttributes
+	 * property with all parameter attributes as a single string.
+	 *
+	 * @param object Object with all parameters of a calculator.
+	 *
+	 * @return object Same object as supplied parameter, but extended
+	 * with an allAttributes property per parameter.
+	 **/
 	private function aggregateAttributes($parameters) {
 		foreach ($parameters as $key => $param) {
 			$param->allAttributes = "";
@@ -53,6 +98,16 @@ class CalculatorCore implements CalculatorInterface {
 		return $parameters;
 	}
 
+	/**
+	 * Create a parameter object filled with supplied properties.
+	 *
+	 * @param string $name Name of the parameter.
+	 * @param string $element Type of element, either input or select.
+	 * @param string $type Type of input element, e.g. text or submit.
+	 * @param string $value Default value of the parameter.
+	 *
+	 * @return object A new parameter object.
+	 **/
 	protected static function createParameter($name, $element = 'input', $type = 'text', $value = '') {
 		$param = new \stdClass();
 		$param->element = 'input';
@@ -71,6 +126,15 @@ class CalculatorCore implements CalculatorInterface {
 		return $param;
 	}
 
+	/**
+	 * Assign parameters to a calculator. When not all or no parameters
+	 * are in supplied parameter object, parameters will be created after
+	 * extracting needed parameters from formula.
+	 *
+	 * @param object $parameters Object with parameters as attributes.
+	 *
+	 * @return void
+	 **/
 	protected function assignParameters($parameters) {
 		$plugin = IoC::getPluginInstance();
 		$domain = $plugin->plugin_slug;
@@ -118,15 +182,16 @@ class CalculatorCore implements CalculatorInterface {
 	}
 
 	/**
-	 * Merge predefined parameters with shortcode parameters.
-	 * It is possible to supply values to the defined parameters
-	 * via shortcode attributes. This functions puts the values
-	 * in the right parameter, optionally overriding predefined
-	 * default values
+	 * Merge predefined parameters with shortcode parameters. It is possible to
+	 * supply values to the defined parameters via shortcode attributes. This
+	 * functions puts the values in the right parameter, optionally overriding
+	 * predefined default values
 	 *
 	 * @param object $parameters Predefined calculator parameters.
 	 * @param array $overrides Parameters from shortcode attributes.
-	 * @return object Predefined calculator parameters overridden with shortcode parameters.
+	 *
+	 * @return object Predefined calculator parameters overridden with shortcode
+	 * parameters.
 	 */
 	private function mergeParameters($parameters, $overrides) {
 		foreach ($overrides as $key => $value) {
@@ -140,6 +205,13 @@ class CalculatorCore implements CalculatorInterface {
 		return $parameters;
 	}
 
+	/**
+	 * Render the result of the calculation. The needed parameters are supplied
+	 * via WordPress in the $_POST global variable. The result is immediately
+	 * echoed, because WordPress calls this via ajax.
+	 *
+	 * @return void
+	 **/
 	public function renderResult() {
 		$this->formulaParser->setFormula($this->formula);
 		foreach ($this->parameters as $key => $param) {
