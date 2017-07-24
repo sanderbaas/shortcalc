@@ -16,7 +16,7 @@ class Plugin {
 		add_action('wp_ajax_nopriv_get_calculator_result', array($this, 'getCalculatorResult'));
 	}
 
-	public function registerImplementations($implementations) {
+	private function registerImplementations($implementations) {
 		foreach ($implementations as $key => $classNames) {
 			$this->implementations[$key] = $classNames;
 		}
@@ -30,8 +30,7 @@ class Plugin {
 		wp_localize_script( 'shortcalc-js', 'ajax_object', $ajax_object);
 
 		$this->loadPluginTextdomain();
-		$this->registerPostTypes();
-		$this->registerTaxonomies();
+		$this->registerCalculatorPostType();
 
 		$implementations = array(
 			'calculators' => array(
@@ -51,7 +50,7 @@ class Plugin {
 		do_action($this->plugin_slug . '_init');
 	}
 
-	public function initCalculators() {
+	private function initCalculators() {
 		foreach ($this->implementations['calculators'] as $calculator) {
 			$calculator::wpInit($this->plugin_slug);
 		}
@@ -69,10 +68,6 @@ class Plugin {
 	 * cleans an installation of this plugin.
 	 **/
 	static function uninstall() {
-	}
-
-	private function registerPostTypes() {
-		$this->registerCalculatorPostType();
 	}
 
 	private function registerCalculatorPostType() {
@@ -113,17 +108,14 @@ class Plugin {
 		register_post_type( 'shortcalc_calculator', $args );
 	}
 
-	private function registerTaxonomies() {
-	}
-
 	/**
 	 * Private method to add shortcodes to WordPress.
 	 **/
-	private function addShortcodes() {
+	public function addShortcodes() {
 		add_shortcode('shortcalc_calculator', array($this, 'runShortcodeCalculator'));
 	}
 
-	function runShortcodeCalculator($atts) {
+	public function runShortcodeCalculator($atts) {
 		$a = shortcode_atts( array(
 			'name' => '',
 		), $atts, 'shortcalc_calculator' );
@@ -153,7 +145,7 @@ class Plugin {
 		$calculator->renderResult($_POST);
 	}
 
-	public function loadPluginTextdomain() {
+	private function loadPluginTextdomain() {
 		$domain = $this->plugin_slug;
 		$locale = apply_filters('plugin_locale', get_locale(), $domain);
 		$moFile = trailingslashit(WP_LANG_DIR)

@@ -3,12 +3,21 @@ namespace ShortCalc\Calculators;
 use \ShortCalc\CalculatorInterface;
 use \ShortCalc\IoC;
 
+/**
+ * Class to be able to define a calculator as a WordPress post inside wp-admin.
+ **/
 class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
+	/**
+	 * When WordPress initialises, register a metabox with extra fields for custom
+	 * calculator posttype.
+	 *
+	 * @return void
+	 **/
 	public static function wpInit() {
 		add_action( 'cmb2_admin_init', array('ShortCalc\Calculators\WPPostCalculator', 'registerMetabox'));
 	}
 
-	function sanitizeText($str) {
+	public static function sanitizeText($str) {
 		// restore leading and trailing space (just one)
 		$filtered = sanitize_text_field($str);
 		if (substr($str,0,1) == " ") { $filtered = ' ' . $filtered; }
