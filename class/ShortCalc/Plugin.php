@@ -40,6 +40,18 @@ class Plugin {
 		foreach ($implementations as $key => $classNames) {
 			$this->implementations[$key] = $classNames;
 		}
+
+		// try to autoload classes for implementations in theme
+		spl_autoload_register(function($class_name){
+			$filename = str_replace('\\', '/', $class_name) . '.php';
+			$theme_file = locate_template(array(
+				'shortcalc/class/' . $filename,
+				'class/' . $filename
+			));
+			if ($theme_file) {
+				require_once $theme_file;
+			}
+		});
 	}
 
 	/**

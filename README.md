@@ -101,3 +101,64 @@ template for this is embedded as a script-tag in the template above.
 ...
 </script>
 ```
+
+## Defining custom calculator implementations
+It is possible to define a calculator by WordPress post or JSON file. But it is
+also possible to define a custom calculator implementation. To do this, extend
+ShortCalc\Calculators\CalculatorCore and place this file in the active theme.
+There are two possible locations for this:
+- `[theme-dir]/class/ShortCalc/Calculators/MyCalculator.php`
+- `[theme-dir]/shortcalc/class/ShortCalc/Calculators/MyCalculator.php`
+
+The class should also implement the `ShortCalc\CalculatorInterface`. An example
+file is:
+````
+namespace ShortCalc\Calculators;
+use ShortCalc\CalculatorInterface;
+
+class MyCalculator extends CalculatorCore implements CalculatorInterface {
+	public static function find(String $name) {
+		error_log('MyCalculator find: ' . $name);
+	}
+}
+````
+
+Don't forget to register the calculator like so:
+````
+add_filter('shortcalc_register_implementations', function($implementations){
+	$implementations['calculators'][] = 'ShortCalc\Calculators\MyCalculator';
+	return $implementations;
+},10,1);
+````
+
+## Defining a custom formula parser implementation
+It is possible to define a custom formula parser implementation and this works
+almost the same as defining a custom calculator implementation. In order to do
+this, create a new file with a class implementing `ShortCalc\FormulaParserInterface`.
+
+There are two possible locations for this:
+- `[theme-dir]/class/ShortCalc/FormulaParsers/MyFormulaParser.php`
+- `[theme-dir]/shortcalc/class/ShortCalc/FormulaParsers/MyFormulaParser.php`
+
+An example
+file is:
+````
+namespace ShortCalc\FormulaParsers;
+use ShortCalc\FormulaParserInterface;
+
+class MyFormulaParser implements FormulaParserInterface {
+	public function __construct() {};
+	public function setFormula($formula) {};
+	public function setParameter(String $key, $value) {};
+	public static function extractParameters($formula) {};
+	public function getResult() {};
+}
+````
+
+Don't forget to register the formula parser like so:
+````
+add_filter('shortcalc_register_implementations', function($implementations){
+	$implementations['formulaParsers'][] = 'ShortCalc\FormulaParsers\MyFormulaParser';
+	return $implementations;
+},10,1);
+````
