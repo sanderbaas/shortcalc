@@ -9,5 +9,6 @@ if ( false !== getenv( 'WP_PLUGIN_DIR' ) ) {
 }
 
 if ( false !== getenv( 'WP_DEVELOP_DIR' ) ) {
-  require getenv( 'WP_DEVELOP_DIR' ) . 'tests/phpunit/includes/bootstrap.php';
+  require_once getenv( 'WP_DEVELOP_DIR' ) . 'tests/phpunit/includes/functions.php';
+  require_once getenv( 'WP_DEVELOP_DIR' ) . 'tests/phpunit/includes/bootstrap.php';
 }
