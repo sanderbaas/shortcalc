@@ -215,10 +215,37 @@ class CalculatorCore implements CalculatorInterface {
 	public function renderResult() {
 		$this->formulaParser->setFormula($this->formula);
 		foreach ($this->parameters as $key => $param) {
-			$value = $_POST['parameters'][$param->attributes->name];
+			$value = self::formatParameterValue($_POST['parameters'][$param->attributes->name]);
 			$this->formulaParser->setParameter($param->attributes->name,$value);
 		}
 		echo $this->formulaParser->getResult();
 		exit;
+	}
+
+	/**
+	 * Parameter values can be entered with different decimal separators
+	 * and optionally spaces and dots as thousends separator. This function
+	 * strips this and returns values with a dot as decimal separator.
+	 *
+	 * @param string $value Value to format
+	 *
+	 * @return float The formatted value that was inputted
+	 **/
+	private static function formatParameterValue($value) {
+		$dotPos = strrpos($value, '.');
+		$commaPos = strrpos($value, ',');
+
+		$sep = false;
+		if ($dotPos && $dotPos > $commaPos) { $sep = $dotPos; }
+		if ($commaPos && $commaPos > $dotPos) { $sep = $commaPos; }
+
+		if (!$sep) {
+			return floatval(preg_replace("/[^0-9]/", "", $value));
+		}
+
+		return floatval(
+			preg_replace("/[^0-9]/", "", substr($value, 0, $sep)) . '.' .
+			preg_replace("/[^0-9]/", "", substr($value, $sep+1, strlen($value)))
+		);
 	}
 }
