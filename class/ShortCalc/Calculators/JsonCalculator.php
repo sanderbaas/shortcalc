@@ -31,6 +31,8 @@ class JsonCalculator extends CalculatorCore implements CalculatorInterface {
 
 		$calculator = IoC::newCalculator($name, __CLASS__);
 		$calculator->formula = $json->formula;
+		$calculator->resultDecimalSep = !empty($json->resultDecimalSep) ? $json->resultDecimalSep : '.';
+		$calculator->resultThousandsSep = !empty($json->resultThousandsSep) ? $json->resultThousandsSep : '';
 		$calculator->resultPrefix = !empty($json->resultPrefix) ? $json->resultPrefix : '';
 		$calculator->resultPostfix = !empty($json->resultPostfix) ? $json->resultPostfix : '';
 		$calculator->formulaParser = IoC::newFormulaParser($json->formulaParser);

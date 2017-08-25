@@ -12,6 +12,10 @@ class CalculatorCore implements CalculatorInterface {
 	public $name;
 	/** @var object Object with all parameters needed for calculation. **/
 	public $parameters;
+	/** @var string Character to use as decimal separator of result. **/
+	public $resultDecimalSep;
+	/** @var string Character to use as thousands separator of result. **/
+	public $resultThousandsSep;
 	/** @var string Text to put before the result of calculation. **/
 	public $resultPrefix;
 	/** @var string Text to put after the result of calculation. **/
@@ -29,6 +33,8 @@ class CalculatorCore implements CalculatorInterface {
 	public function __construct(String $name) {
 		$this->name = $name;
 		$this->parameters = new \stdClass();
+		$this->resultDecimalSep = '.';
+		$this->resultThousandsSep = '';
 	}
 
 	/**
@@ -218,7 +224,10 @@ class CalculatorCore implements CalculatorInterface {
 			$value = self::formatParameterValue($_POST['parameters'][$param->attributes->name]);
 			$this->formulaParser->setParameter($param->attributes->name,$value);
 		}
-		echo $this->formulaParser->getResult();
+		$result = $this->formulaParser->getResult();
+		$numDecimals = strlen(substr(strrchr($result, "."), 1));
+		$fResult = number_format($result, $numDecimals, $this->resultDecimalSep, $this->resultThousandsSep);
+		echo $fResult;
 		exit;
 	}
 

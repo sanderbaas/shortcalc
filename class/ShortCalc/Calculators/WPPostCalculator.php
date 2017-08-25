@@ -73,6 +73,26 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 		));
 
 		$cmb->add_field(array(
+			'name' => __('Result decimal separator', $domain),
+			'desc' => __('Character to use as decimal separator', $domain),
+			'id' => $prefix . 'result_decimal_sep',
+			'type' => 'text',
+			'default' => '.',
+			'sanitization_cb' => array('ShortCalc\Calculators\WPPostCalculator', 'sanitizeText'),
+			'column' => true,
+		));
+
+		$cmb->add_field(array(
+			'name' => __('Result thousands separator', $domain),
+			'desc' => __('Character to use as thousands separator', $domain),
+			'id' => $prefix . 'result_thousands_sep',
+			'type' => 'text',
+			'default' => '',
+			'sanitization_cb' => array('ShortCalc\Calculators\WPPostCalculator', 'sanitizeText'),
+			'column' => true,
+		));
+
+		$cmb->add_field(array(
 			'name' => __('Result Prefix', $domain),
 			'desc' => __('Text to put before result', $domain),
 			'id' => $prefix . 'result_prefix',
@@ -219,6 +239,12 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 
 			if (!empty($meta['shortcalc_formula'][0])) {
 				$calculator->formula = $meta['shortcalc_formula'][0];
+			}
+			if (!empty($meta['shortcalc_result_decimal_sep'][0])) {
+				$calculator->resultDecimalSep = $meta['shortcalc_result_decimal_sep'][0];
+			}
+			if (!empty($meta['shortcalc_result_thousands_sep'][0])) {
+				$calculator->resultThousandsSep = $meta['shortcalc_result_thousands_sep'][0];
 			}
 			if (!empty($meta['shortcalc_result_prefix'][0])) {
 				$calculator->resultPrefix = $meta['shortcalc_result_prefix'][0];
