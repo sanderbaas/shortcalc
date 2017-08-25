@@ -7,9 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: shortcalc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-23 11:45+0200\n"
-"PO-Revision-Date: 2017-07-23 11:47+0200\n"
+"POT-Creation-Date: 2017-08-25 10:25+0200\n"
+"PO-Revision-Date: 2017-08-25 10:26+0200\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,189 +19,202 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: __;_e;_x:1,2c\n"
 "X-Poedit-Basepath: ..\n"
-"Last-Translator: \n"
-"Language: nl_NL\n"
 "X-Poedit-SearchPath-0: class\n"
 "X-Poedit-SearchPath-1: views\n"
 
-#: class/ShortCalc/Calculators/CalculatorCore.php:111
+#: class/ShortCalc/Calculators/CalculatorCore.php:186
 msgid "Calculate"
 msgstr "Berekenen"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:27
+#: class/ShortCalc/Calculators/WPPostCalculator.php:50
 msgid "Calculator Details"
 msgstr "Details calculator"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:38
+#: class/ShortCalc/Calculators/WPPostCalculator.php:61
 msgid "Formula"
 msgstr "Formule"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:39
+#: class/ShortCalc/Calculators/WPPostCalculator.php:62
 msgid ""
 "Formula parsable by Formula Parser above. Docs: https://hoa-project.net/En/"
 "Literature/Hack/Math.html"
 msgstr ""
-"Formule kan geparsed worden door bovenstaande formule parser. "
-"Documentatie: https://hoa-project.net/En/Literature/Hack/Math.html"
+"Formule kan geparsed worden door bovenstaande formule parser. Documentatie: "
+"https://hoa-project.net/En/Literature/Hack/Math.html"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:46
+#: class/ShortCalc/Calculators/WPPostCalculator.php:69
 msgid "Formula Parser"
 msgstr "Formule-parser"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:53
+#: class/ShortCalc/Calculators/WPPostCalculator.php:76
+msgid "Result decimal separator"
+msgstr "Decimal scheidingsteken resultaat"
+
+#: class/ShortCalc/Calculators/WPPostCalculator.php:77
+msgid "Character to use as decimal separator"
+msgstr "Teken dat gebruikt wordt als decimaal scheidingsteken"
+
+#: class/ShortCalc/Calculators/WPPostCalculator.php:86
+msgid "Result thousands separator"
+msgstr "Scheidingsteken duizendtallen resultaat"
+
+#: class/ShortCalc/Calculators/WPPostCalculator.php:87
+msgid "Character to use as thousands separator"
+msgstr "Teken dat gebruikt wordt als scheidingsteken van duizendtallen"
+
+#: class/ShortCalc/Calculators/WPPostCalculator.php:96
 msgid "Result Prefix"
 msgstr "Prefix resultaat"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:54
+#: class/ShortCalc/Calculators/WPPostCalculator.php:97
 msgid "Text to put before result"
 msgstr "Tekst die voor het resultaat geplaatst wordt"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:62
+#: class/ShortCalc/Calculators/WPPostCalculator.php:105
 msgid "Result Postfix"
 msgstr "Postfix resultaat"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:63
+#: class/ShortCalc/Calculators/WPPostCalculator.php:106
 msgid "Text to put after result"
 msgstr "Tekst die achter het resultaat geplaatst wordt"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:73
+#: class/ShortCalc/Calculators/WPPostCalculator.php:116
 msgid "Parameter meta data"
 msgstr "Meta data parameters"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:75
+#: class/ShortCalc/Calculators/WPPostCalculator.php:118
 msgid "Parameter {#}"
 msgstr "Parameter {#}"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:76
+#: class/ShortCalc/Calculators/WPPostCalculator.php:119
 msgid "Add Another Parameter"
 msgstr "Nog een parameter toevoegen"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:77
+#: class/ShortCalc/Calculators/WPPostCalculator.php:120
 msgid "Remove Parameter"
 msgstr "Parameter verwijderen"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:82
+#: class/ShortCalc/Calculators/WPPostCalculator.php:126
 msgid "Name"
 msgstr "Naam"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:83
+#: class/ShortCalc/Calculators/WPPostCalculator.php:127
 msgid "Must match a parameter in the formula"
 msgstr "Moet overeenkomen met een parameter uit de formule"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:89
+#: class/ShortCalc/Calculators/WPPostCalculator.php:133
 msgid "Type of Element"
 msgstr "Soort veld"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:94
+#: class/ShortCalc/Calculators/WPPostCalculator.php:138
 msgid "Input"
 msgstr "Input"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:95
+#: class/ShortCalc/Calculators/WPPostCalculator.php:139
 msgid "Select"
 msgstr "Select"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:100
+#: class/ShortCalc/Calculators/WPPostCalculator.php:144
 msgid "Label"
 msgstr "Label"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:102
+#: class/ShortCalc/Calculators/WPPostCalculator.php:146
 msgid "The label is used on the calculator frontend"
 msgstr "De label wordt gebruikt op de frontend van de calculator"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:107
+#: class/ShortCalc/Calculators/WPPostCalculator.php:151
 msgid "Prefix"
 msgstr "Prefix"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:109
+#: class/ShortCalc/Calculators/WPPostCalculator.php:153
 msgid "Text to put before field on form"
 msgstr "Tekst die geplaatst wordt voor het veld op het formulier"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:115
+#: class/ShortCalc/Calculators/WPPostCalculator.php:159
 msgid "Postfix"
 msgstr "Postfix"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:117
+#: class/ShortCalc/Calculators/WPPostCalculator.php:161
 msgid "Text to put after field on form"
 msgstr "Tekst die geplaatst wordt achter het veld op het formulier"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:123
+#: class/ShortCalc/Calculators/WPPostCalculator.php:167
 msgid "Attributes"
 msgstr "Veld-attributen"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:124
+#: class/ShortCalc/Calculators/WPPostCalculator.php:168
 msgid "HTML attributes, for example: value=\"Foo\" required type=\"submit\""
-msgstr ""
-"HTML attributen, bijvoorbeeld: value=\"Foo\" required type=\"submit\""
+msgstr "HTML attributen, bijvoorbeeld: value=\"Foo\" required type=\"submit\""
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:130
+#: class/ShortCalc/Calculators/WPPostCalculator.php:174
 msgid "Options"
 msgstr "Keuze-opties"
 
-#: class/ShortCalc/Calculators/WPPostCalculator.php:131
+#: class/ShortCalc/Calculators/WPPostCalculator.php:175
 msgid "Selectable options for select elements"
 msgstr "Opties die gekozen kunnen worden voor select elementen"
 
-#: class/ShortCalc/Plugin.php:81
+#: class/ShortCalc/Plugin.php:119
 msgctxt "post type general name"
 msgid "Calculators"
 msgstr "Calculators\t"
 
-#: class/ShortCalc/Plugin.php:82
+#: class/ShortCalc/Plugin.php:120
 msgctxt "post type singular name"
 msgid "Calculator"
 msgstr "Calculator"
 
-#: class/ShortCalc/Plugin.php:83
+#: class/ShortCalc/Plugin.php:121
 msgctxt "admin menu"
 msgid "Calculators"
 msgstr "Calculators\t"
 
-#: class/ShortCalc/Plugin.php:84
+#: class/ShortCalc/Plugin.php:122
 msgctxt "add new on admin bar"
 msgid "Calculator"
 msgstr "Calculator"
 
-#: class/ShortCalc/Plugin.php:85
+#: class/ShortCalc/Plugin.php:123
 msgctxt "calculator"
 msgid "Add New"
 msgstr "Nieuwe toevoegen"
 
-#: class/ShortCalc/Plugin.php:86
+#: class/ShortCalc/Plugin.php:124
 msgid "Add New Calculator"
 msgstr "Nieuwe Calculator Toevoegen"
 
-#: class/ShortCalc/Plugin.php:87
+#: class/ShortCalc/Plugin.php:125
 msgid "New Calculator"
 msgstr "Nieuwe Calculator"
 
-#: class/ShortCalc/Plugin.php:88
+#: class/ShortCalc/Plugin.php:126
 msgid "Edit Calculator"
 msgstr "Calculator Bewerken"
 
-#: class/ShortCalc/Plugin.php:89
+#: class/ShortCalc/Plugin.php:127
 msgid "View Calculator"
 msgstr "Calculator Bekijken"
 
-#: class/ShortCalc/Plugin.php:90
+#: class/ShortCalc/Plugin.php:128
 msgid "All Calculators"
 msgstr "Alle Calculators"
 
-#: class/ShortCalc/Plugin.php:91
+#: class/ShortCalc/Plugin.php:129
 msgid "Search Calculators"
 msgstr "Calculators Zoeken"
 
-#: class/ShortCalc/Plugin.php:92
+#: class/ShortCalc/Plugin.php:130
 msgid "Parent Calculators:"
 msgstr "Bovenliggende Calculators:"
 
-#: class/ShortCalc/Plugin.php:93
+#: class/ShortCalc/Plugin.php:131
 msgid "No calculators found."
 msgstr "Geen calculators gevonden."
 
-#: class/ShortCalc/Plugin.php:94
+#: class/ShortCalc/Plugin.php:132
 msgid "No calculators found in Trash."
 msgstr "Geen calculators gevonden in de prullebak."
 
-#: class/ShortCalc/Plugin.php:99
+#: class/ShortCalc/Plugin.php:137
 msgid "Description."
 msgstr "Omschrijving."
