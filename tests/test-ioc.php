@@ -8,6 +8,8 @@ class IoC_Test extends WP_UnitTestCase {
 	public function test_get_plugin_instance(){
 		$plugin = ShortCalc\IoC::getPluginInstance();
 		$this->assertInstanceOf('ShortCalc\Plugin', $plugin);
+		$plugin2 = ShortCalc\IoC::getPluginInstance();
+		$this->assertSame($plugin, $plugin2);
 	}
 
 	public function test_find_calculator(){
@@ -30,16 +32,28 @@ class IoC_Test extends WP_UnitTestCase {
 		$this->assertInstanceOf('ShortCalc\Calculators\WPPostCalculator', $calculator);
 	}
 
+	/**
+     * @expectedException        Error
+     * @expectedExceptionMessage Class 'ShortCalc\Calculators\nonexistent' not found
+     */
+	public function test_new_calculator_fail(){
+		$calculator = ShortCalc\IoC::newCalculator('calc1','ShortCalc\Calculators\nonexistent');
+	}
+
 	public function test_new_formula_parser(){
-		$fParser = ShortCalc\IoC::newCalculator('fparse1','ShortCalc\FormulaParsers\HoaMath');
+		$fParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
 		$this->assertInstanceOf('ShortCalc\FormulaParsers\HoaMath', $fParser);
+	}
+
+	/**
+     * @expectedException        Error
+     * @expectedExceptionMessage Class '\ShortCalc\FormulaParsers\nonexistent' not found
+     */
+	public function test_new_formula_parser_fail(){
+		$fParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\nonexistent');
 	}
 
 	function tearDown(){
 
 	}
-
-	//find_calculator
-	//new_calculator
-	//new_formula_parser	
 }
