@@ -73,8 +73,8 @@ class CalculatorCore implements CalculatorInterface {
 			'content-calculator-form-'.sanitize_file_name($this->name).'.php',
 		));
 		$template = $override ? $override : $template;
-		$parameters = $this->mergeParameters($this->parameters, $params);
-		$parameters = $this->aggregateAttributes($parameters);
+		$parameters = self::mergeParameters($this->parameters, $params);
+		$parameters = self::aggregateAttributes($parameters);
 
 		set_query_var('name', $this->name);
 		set_query_var('parameters', $parameters);
@@ -94,7 +94,7 @@ class CalculatorCore implements CalculatorInterface {
 	 * @return object Same object as supplied parameter, but extended
 	 * with an allAttributes property per parameter.
 	 **/
-	private function aggregateAttributes($parameters) {
+	private static function aggregateAttributes($parameters) {
 		foreach ($parameters as $key => $param) {
 			$param->allAttributes = "";
 			foreach ($param->attributes as $name => $value) {
@@ -199,7 +199,7 @@ class CalculatorCore implements CalculatorInterface {
 	 * @return object Predefined calculator parameters overridden with shortcode
 	 * parameters.
 	 */
-	private function mergeParameters($parameters, $overrides) {
+	private static function mergeParameters($parameters, $overrides) {
 		foreach ($overrides as $key => $value) {
 			if (!empty($parameters->{$key})) {
 				if (empty($parameters->{$key}->attributes)) {
@@ -228,7 +228,9 @@ class CalculatorCore implements CalculatorInterface {
 		$numDecimals = strlen(substr(strrchr($result, "."), 1));
 		$fResult = number_format($result, $numDecimals, $this->resultDecimalSep, $this->resultThousandsSep);
 		echo $fResult;
-		exit;
+		if (DOING_AJAX == 1) {
+			exit;
+		}
 	}
 
 	/**
