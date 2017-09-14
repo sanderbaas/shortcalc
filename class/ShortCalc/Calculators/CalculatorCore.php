@@ -116,7 +116,7 @@ class CalculatorCore implements CalculatorInterface {
 	 **/
 	protected static function createParameter($name, $element = 'input', $type = 'text', $value = '') {
 		$param = new \stdClass();
-		$param->element = 'input';
+		$param->element = $element;
 		$param->prefix = '';
 		$param->postfix = '';
 		$param->label = '';
