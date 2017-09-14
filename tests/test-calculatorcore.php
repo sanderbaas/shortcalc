@@ -18,9 +18,28 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		return $method->invokeArgs($object, $parameters);
 	}
 
-	// build up
-	function setUp(){
+	/**
+	 * Call protected/private method of a class.
+	 *
+	 * @param string $className	 Name of class that we will run method on.
+	 * @param string $methodName Method name to call
+	 * @param array  $parameters Array of parameters to pass into method.
+	 *
+	 * @return mixed Method return.
+	 */
+	public function invokeMethodByClassName($className, $methodName, array $parameters = array())
+	{
+		$reflection = new \ReflectionClass($className);
+		$method = $reflection->getMethod($methodName);
+		$method->setAccessible(true);
 
+		return $method->invokeArgs($object, $parameters);
+	}
+
+	function setUp() {
+	}
+
+	function tearDown() {
 	}
 
 	public function test_new_calculatorcore(){
@@ -115,7 +134,402 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$this->assertRegExp($expected, $result);
 	}
 
-	function tearDown(){
+	public function test_aggregate_attributes(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$json = '{
+			"a": {
+				"label": "A",
+				"attributes": {
+					"required": true
+				}
+			},
+			"b": {
+				"label": "B",
+				"attributes": {
+					"required": true
+				}
+			},
+			"submit": {
+				"attributes": {
+					"value": "Find C",
+					"type": "submit"
+				}
+			}
+		}';
+		$parameters = json_decode($json);
+		$result = $this->invokeMethod($calc, 'aggregateAttributes', array($parameters));
 
+		$expected = json_decode($json);
+		$expected->a->allAttributes = 'required="1" ';
+		$expected->b->allAttributes = 'required="1" ';
+		$expected->submit->allAttributes = 'value="Find C" type="submit" ';
+
+		$this->assertEquals($expected, $result);
+	}
+
+	public function test_aggregate_attributes_empty_attributes(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$json = '{
+			"a": {
+				"label": "A",
+				"attributes": {}
+			},
+			"b": {
+				"label": "B",
+				"attributes": {}
+			},
+			"submit": {
+				"attributes": {}
+			}
+		}';
+		$parameters = json_decode($json);
+		$result = $this->invokeMethod($calc, 'aggregateAttributes', array($parameters));
+
+		$expected = json_decode($json);
+		$expected->a->allAttributes = '';
+		$expected->b->allAttributes = '';
+		$expected->submit->allAttributes = '';
+
+		$this->assertEquals($expected, $result);
+	}
+
+	public function test_aggregate_attributes_no_parameters(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$json = '{}';
+		$parameters = json_decode($json);
+		$result = $this->invokeMethod($calc, 'aggregateAttributes', array($parameters));
+
+		$expected = json_decode($json);
+
+		$this->assertEquals($expected, $result);
+	}
+
+	public function test_create_parameter_only_name(){
+		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'createParameter', array('foo'));
+		$this->assertInstanceOf('\StdClass', $result);
+		$this->assertEquals('input', $result->element);
+		$this->assertEquals('', $result->prefix);
+		$this->assertEquals('', $result->postfix);
+		$this->assertEquals('foo', $result->label);
+		$this->assertInstanceOf('\StdClass', $result->attributes);
+		$this->assertTrue($result->attributes->required);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $result->attributes->id);
+		$this->assertEquals('foo', $result->attributes->name);
+		$this->assertEquals('text', $result->attributes->type);
+		$this->assertEquals('', $result->attributes->value);
+	}
+
+	public function test_create_parameter_submit(){
+		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'createParameter', array('foo','input','submit'));
+		$this->assertInstanceOf('\StdClass', $result);
+		$this->assertEquals('input', $result->element);
+		$this->assertEquals('', $result->prefix);
+		$this->assertEquals('', $result->postfix);
+		$this->assertEquals('', $result->label);
+		$this->assertInstanceOf('\StdClass', $result->attributes);
+		$this->assertNull($result->attributes->required);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $result->attributes->id);
+		$this->assertEquals('foo', $result->attributes->name);
+		$this->assertEquals('submit', $result->attributes->type);
+		$this->assertEquals('', $result->attributes->value);
+	}
+
+	public function test_create_parameter_params(){
+		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'createParameter', array('foo','bar','quz','val'));
+		$this->assertInstanceOf('\StdClass', $result);
+		$this->assertEquals('bar', $result->element);
+		$this->assertEquals('', $result->prefix);
+		$this->assertEquals('', $result->postfix);
+		$this->assertEquals('foo', $result->label);
+		$this->assertInstanceOf('\StdClass', $result->attributes);
+		$this->assertTrue($result->attributes->required);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $result->attributes->id);
+		$this->assertEquals('foo', $result->attributes->name);
+		$this->assertEquals('quz', $result->attributes->type);
+		$this->assertEquals('val', $result->attributes->value);
+	}
+
+	public function test_assign_parameters(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$json = '{
+			"a": {
+				"label": "A",
+				"attributes": {
+					"required": true
+				}
+			},
+			"b": {
+				"label": "B",
+				"attributes": {
+					"required": true
+				}
+			},
+			"submit": {
+				"attributes": {
+					"value": "Find C",
+					"type": "submit"
+				}
+			}
+		}';
+		$parameters = json_decode($json);
+		$this->invokeMethod($calc, 'assignParameters', array($parameters));
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->a);
+		$this->assertEquals('A', $calc->parameters->a->label);
+		$this->assertEquals('input', $calc->parameters->a->element);
+		$this->assertEquals('', $calc->parameters->a->prefix);
+		$this->assertEquals('', $calc->parameters->a->postfix);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->a->attributes);
+		$this->assertTrue($calc->parameters->a->attributes->required);
+		$this->assertEquals('a', $calc->parameters->a->attributes->name);
+		$this->assertEquals('', $calc->parameters->a->attributes->value);
+		$this->assertEquals('text', $calc->parameters->a->attributes->type);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->a->attributes->id);
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters->b);
+		$this->assertEquals('B', $calc->parameters->b->label);
+		$this->assertEquals('input', $calc->parameters->b->element);
+		$this->assertEquals('', $calc->parameters->b->prefix);
+		$this->assertEquals('', $calc->parameters->b->postfix);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->b->attributes);
+		$this->assertTrue($calc->parameters->a->attributes->required);
+		$this->assertEquals('b', $calc->parameters->b->attributes->name);
+		$this->assertEquals('', $calc->parameters->b->attributes->value);
+		$this->assertEquals('text', $calc->parameters->b->attributes->type);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->b->attributes->id);
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters->submit);
+		$this->assertEquals('', $calc->parameters->submit->label);
+		$this->assertEquals('input', $calc->parameters->submit->element);
+		$this->assertEquals('', $calc->parameters->submit->prefix);
+		$this->assertEquals('', $calc->parameters->submit->postfix);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->submit->attributes);
+		$this->assertNull($calc->parameters->submit->attributes->required);
+		$this->assertEquals('submit', $calc->parameters->submit->attributes->name);
+		$this->assertEquals('Find C', $calc->parameters->submit->attributes->value);
+		$this->assertEquals('submit', $calc->parameters->submit->attributes->type);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->submit->attributes->id);
+	}
+
+	public function test_assign_parameters_add_submit(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$json = '{
+			"a": {
+				"label": "A",
+				"attributes": {
+					"required": true
+				}
+			},
+			"b": {
+				"label": "B",
+				"attributes": {
+					"required": true
+				}
+			}
+		}';
+		$parameters = json_decode($json);
+		$this->invokeMethod($calc, 'assignParameters', array($parameters));
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters);
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters->submit);
+		$this->assertEquals('', $calc->parameters->submit->label);
+		$this->assertEquals('input', $calc->parameters->submit->element);
+		$this->assertEquals('', $calc->parameters->submit->prefix);
+		$this->assertEquals('', $calc->parameters->submit->postfix);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->submit->attributes);
+		$this->assertNull($calc->parameters->submit->attributes->required);
+		$this->assertEquals('submit', $calc->parameters->submit->attributes->name);
+		$this->assertEquals('Calculate', $calc->parameters->submit->attributes->value);
+		$this->assertEquals('submit', $calc->parameters->submit->attributes->type);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->submit->attributes->id);
+	}
+
+	public function test_assign_parameters_from_formula(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$calc->formula = '{{a}}+{{b}}';
+
+		$this->invokeMethod($calc, 'assignParameters', array(array()));
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters);
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters->a);
+		$this->assertEquals('a', $calc->parameters->a->label);
+		$this->assertEquals('input', $calc->parameters->a->element);
+		$this->assertEquals('', $calc->parameters->a->prefix);
+		$this->assertEquals('', $calc->parameters->a->postfix);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->a->attributes);
+		$this->assertTrue($calc->parameters->a->attributes->required);
+		$this->assertEquals('a', $calc->parameters->a->attributes->name);
+		$this->assertEquals('', $calc->parameters->a->attributes->value);
+		$this->assertEquals('text', $calc->parameters->a->attributes->type);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->a->attributes->id);
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters->b);
+		$this->assertEquals('b', $calc->parameters->b->label);
+		$this->assertEquals('input', $calc->parameters->b->element);
+		$this->assertEquals('', $calc->parameters->b->prefix);
+		$this->assertEquals('', $calc->parameters->b->postfix);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->b->attributes);
+		$this->assertTrue($calc->parameters->a->attributes->required);
+		$this->assertEquals('b', $calc->parameters->b->attributes->name);
+		$this->assertEquals('', $calc->parameters->b->attributes->value);
+		$this->assertEquals('text', $calc->parameters->b->attributes->type);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->b->attributes->id);
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters->submit);
+		$this->assertEquals('', $calc->parameters->submit->label);
+		$this->assertEquals('input', $calc->parameters->submit->element);
+		$this->assertEquals('', $calc->parameters->submit->prefix);
+		$this->assertEquals('', $calc->parameters->submit->postfix);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->submit->attributes);
+		$this->assertNull($calc->parameters->submit->attributes->required);
+		$this->assertEquals('submit', $calc->parameters->submit->attributes->name);
+		$this->assertEquals('Calculate', $calc->parameters->submit->attributes->value);
+		$this->assertEquals('submit', $calc->parameters->submit->attributes->type);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->submit->attributes->id);
+	}
+
+	function test_merge_parameters(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$calc->formula = '{{a}}+{{b}}';
+
+		$this->invokeMethod($calc, 'assignParameters', array(array()));
+
+		$params = array("a" => "3.14", "b" => "1337");
+		$this->invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters);
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters->a);
+		$this->assertEquals('a', $calc->parameters->a->label);
+		$this->assertEquals('input', $calc->parameters->a->element);
+		$this->assertEquals('', $calc->parameters->a->prefix);
+		$this->assertEquals('', $calc->parameters->a->postfix);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->a->attributes);
+		$this->assertTrue($calc->parameters->a->attributes->required);
+		$this->assertEquals('a', $calc->parameters->a->attributes->name);
+		$this->assertEquals('3.14', $calc->parameters->a->attributes->value);
+		$this->assertEquals('text', $calc->parameters->a->attributes->type);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->a->attributes->id);
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters->b);
+		$this->assertEquals('b', $calc->parameters->b->label);
+		$this->assertEquals('input', $calc->parameters->b->element);
+		$this->assertEquals('', $calc->parameters->b->prefix);
+		$this->assertEquals('', $calc->parameters->b->postfix);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->b->attributes);
+		$this->assertTrue($calc->parameters->b->attributes->required);
+		$this->assertEquals('b', $calc->parameters->b->attributes->name);
+		$this->assertEquals('1337', $calc->parameters->b->attributes->value);
+		$this->assertEquals('text', $calc->parameters->b->attributes->type);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->b->attributes->id);
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters->submit);
+		$this->assertEquals('', $calc->parameters->submit->label);
+		$this->assertEquals('input', $calc->parameters->submit->element);
+		$this->assertEquals('', $calc->parameters->submit->prefix);
+		$this->assertEquals('', $calc->parameters->submit->postfix);
+		$this->assertInstanceOf('\StdClass', $calc->parameters->submit->attributes);
+		$this->assertNull($calc->parameters->submit->attributes->required);
+		$this->assertEquals('submit', $calc->parameters->submit->attributes->name);
+		$this->assertEquals('Calculate', $calc->parameters->submit->attributes->value);
+		$this->assertEquals('submit', $calc->parameters->submit->attributes->type);
+		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->submit->attributes->id);
+	}
+
+	function test_merge_parameters_non_existing(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$calc->formula = '{{a}}+{{b}}';
+
+		$this->invokeMethod($calc, 'assignParameters', array(array()));
+
+		$params = array("x" => "3.14", "y" => "1337");
+		$this->invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters);
+		$this->assertNull($calc->parameters->x);
+		$this->assertNull($calc->parameters->y);
+		$this->assertEquals('', $calc->parameters->a->attributes->value);
+		$this->assertEquals('', $calc->parameters->b->attributes->value);
+	}
+
+	function test_merge_parameters_non_string(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$calc->formula = '{{a}}+{{b}}';
+
+		$this->invokeMethod($calc, 'assignParameters', array(array()));
+
+		$params = array("a" => 3.14, "b" => 1337);
+		$this->invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters);
+		$this->assertEquals('3.14', $calc->parameters->a->attributes->value);
+		$this->assertEquals('1337', $calc->parameters->b->attributes->value);
+	}
+
+	function test_render_result(){
+		$_POST['parameters']['a'] = '2';
+		$_POST['parameters']['b'] = '3';
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$calc->formula = '{{a}}*{{b}}';
+		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		$this->expectOutputString('6');
+		$calc->renderResult();
+	}
+
+	function test_render_result_separators(){
+		$_POST['parameters']['a'] = '200.22';
+		$_POST['parameters']['b'] = '300.14';
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$calc->formula = '{{a}}*{{b}}';
+		$calc->resultDecimalSep = ',';
+		$calc->resultThousandsSep = '.';
+		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		$this->expectOutputString('60.094,0308');
+		$calc->renderResult();
+	}
+
+	function test_render_result_decimal_correction(){
+		$_POST['parameters']['a'] = '200.22';
+		$_POST['parameters']['b'] = '300,14';
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$calc->formula = '{{a}}*{{b}}';
+		$calc->resultDecimalSep = ',';
+		$calc->resultThousandsSep = '.';
+		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		$this->expectOutputString('60.094,0308');
+		$calc->renderResult();
+	}
+
+	function test_format_parameter_value(){
+		$value = '1,2';
+		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
+		$this->assertEquals(1.2, $result);
+
+		$value = '1.000.000,2000000';
+		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
+		$this->assertEquals(1000000.2, $result);
+
+		$value = '1,000,000,2';
+		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
+		$this->assertEquals(1000000.2, $result);
+
+		$value = '1.000.000,2';
+		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
+		$this->assertEquals(1000000.2, $result);
 	}
 }
