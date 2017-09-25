@@ -351,6 +351,24 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$this->assertRegExp('/shortcalc_([0-9]*)/', $calc->parameters->submit->attributes->id);
 	}
 
+	public function test_assign_parameters_add_label(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$json = '{
+			"a": {
+				"label": "",
+				"attributes": {
+					"required": true
+				}
+			}
+		}';
+		$parameters = json_decode($json);
+		$this->invokeMethod($calc, 'assignParameters', array($parameters));
+
+		$this->assertEquals('a', $calc->parameters->a->label);
+	}
+
+
 	public function test_assign_parameters_from_formula(){
 		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
 		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
@@ -463,6 +481,28 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$this->assertEquals('', $calc->parameters->b->attributes->value);
 	}
 
+	function test_merge_parameters_param_no_attributes(){
+		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
+		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
+		$calc->formula = '{{a}}+{{b}}';
+
+		$this->invokeMethod($calc, 'assignParameters', array(array()));
+
+		$params = array("a" => "3.14", "b" => "1337");
+		$calcParams = (object) [
+			'a' => (object) [
+				'element' => 'input',
+				'prefix' => '',
+				'postfix' => '',
+				'label' => ''
+			]
+		];
+		$this->invokeMethod($calc, 'mergeParameters', array($calcParams, $params));
+
+		$this->assertInstanceOf('\StdClass', $calc->parameters);
+		$this->assertEquals('3.14', $calc->parameters->a->attributes->value);
+	}
+
 	function test_merge_parameters_non_string(){
 		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
 		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
@@ -486,7 +526,9 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->formula = '{{a}}*{{b}}';
 		$this->invokeMethod($calc, 'assignParameters', array(array()));
 		$this->expectOutputString('6');
+		_disable_wp_die();
 		$calc->renderResult();
+		_enable_wp_die();
 	}
 
 	function test_render_result_separators(){
@@ -499,7 +541,9 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->resultThousandsSep = '.';
 		$this->invokeMethod($calc, 'assignParameters', array(array()));
 		$this->expectOutputString('60.094,0308');
+		_disable_wp_die();
 		$calc->renderResult();
+		_enable_wp_die();
 	}
 
 	function test_render_result_decimal_correction(){
@@ -512,7 +556,9 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->resultThousandsSep = '.';
 		$this->invokeMethod($calc, 'assignParameters', array(array()));
 		$this->expectOutputString('60.094,0308');
+		_disable_wp_die();
 		$calc->renderResult();
+		_enable_wp_die();
 	}
 
 	function test_format_parameter_value(){
