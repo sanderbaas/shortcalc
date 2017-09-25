@@ -15,6 +15,7 @@ class Plugin {
 	/** @var array Contains the registered calculators and formula parsers. **/
 	public $implementations = array();
 
+	public $meta_box = null;
 	/**
 	 * Constructor for Plugin class.
 	 *

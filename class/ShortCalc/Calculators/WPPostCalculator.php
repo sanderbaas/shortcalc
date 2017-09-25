@@ -177,6 +177,8 @@ class WPPostCalculator extends CalculatorCore implements CalculatorInterface {
 			'type' => 'text',
 			'repeatable' => true,
 		));
+
+		$plugin->meta_box = $cmb;
 	}
 
 	/**
