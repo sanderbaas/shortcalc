@@ -48,10 +48,7 @@ class Plugin {
 			$theme_file = locate_template(array(
 				'shortcalc/class/' . $filename,
 				'class/' . $filename
-			));
-			if ($theme_file) {
-				require_once $theme_file;
-			}
+			), true, true);
 		});
 	}
 
@@ -110,6 +107,7 @@ class Plugin {
 	 * @return void
 	 **/
 	static function install() {
+		return;
 	}
 
 	/**
@@ -119,6 +117,7 @@ class Plugin {
 	 * @return void
 	 **/
 	static function uninstall() {
+		return;
 	}
 
 	/**

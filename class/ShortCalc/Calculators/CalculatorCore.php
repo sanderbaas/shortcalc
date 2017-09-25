@@ -205,7 +205,7 @@ class CalculatorCore implements CalculatorInterface {
 		foreach ($overrides as $key => $value) {
 			if (!empty($parameters->{$key})) {
 				if (empty($parameters->{$key}->attributes)) {
-					$parameters->{$key}->attributes = new \stdClass;
+					$parameters->{$key}->attributes = new \stdClass();
 				}
 				$parameters->{$key}->attributes->value = $value;
 			}

@@ -387,7 +387,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 
 		$params = array("a" => "3.14", "b" => "1337");
-		TestHelper::invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
+		$calc->parameters = TestHelper::invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 
@@ -436,7 +436,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 
 		$params = array("x" => "3.14", "y" => "1337");
-		TestHelper::invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
+		$calc->parameters = TestHelper::invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 		$this->assertNull($calc->parameters->x);
@@ -461,7 +461,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 				'label' => ''
 			]
 		];
-		TestHelper::invokeMethod($calc, 'mergeParameters', array($calcParams, $params));
+		$calc->parameters = TestHelper::invokeMethod($calc, 'mergeParameters', array($calcParams, $params));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 		$this->assertEquals('3.14', $calc->parameters->a->attributes->value);
@@ -475,7 +475,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 
 		$params = array("a" => 3.14, "b" => 1337);
-		TestHelper::invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
+		$calc->parameters = TestHelper::invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 		$this->assertEquals('3.14', $calc->parameters->a->attributes->value);
