@@ -63,6 +63,8 @@ class CalculatorCore implements CalculatorInterface {
 	 * to override default values of form fields.
 	 *
 	 * @return string HTML with form of calculator.
+	 *
+	 * @covers CalculatorCore::mergeParameters
 	 **/
 	public function renderForm(Array $params) {
 		$template = __DIR__ . '/../../../views/content-calculator-form.php';
@@ -228,9 +230,7 @@ class CalculatorCore implements CalculatorInterface {
 		$numDecimals = strlen(substr(strrchr($result, "."), 1));
 		$fResult = number_format($result, $numDecimals, $this->resultDecimalSep, $this->resultThousandsSep);
 		echo $fResult;
-		if (DOING_AJAX == 1) {
-			exit;
-		}
+		wp_die();
 	}
 
 	/**
