@@ -1,41 +1,5 @@
 <?php
 class CalculatorCore_Test extends WP_UnitTestCase {
-	/**
-	 * Call protected/private method of a class.
-	 *
-	 * @param object &$object    Instantiated object that we will run method on.
-	 * @param string $methodName Method name to call
-	 * @param array  $parameters Array of parameters to pass into method.
-	 *
-	 * @return mixed Method return.
-	 */
-	public function invokeMethod(&$object, $methodName, array $parameters = array())
-	{
-		$reflection = new \ReflectionClass(get_class($object));
-		$method = $reflection->getMethod($methodName);
-		$method->setAccessible(true);
-
-		return $method->invokeArgs($object, $parameters);
-	}
-
-	/**
-	 * Call protected/private method of a class.
-	 *
-	 * @param string $className	 Name of class that we will run method on.
-	 * @param string $methodName Method name to call
-	 * @param array  $parameters Array of parameters to pass into method.
-	 *
-	 * @return mixed Method return.
-	 */
-	public function invokeMethodByClassName($className, $methodName, array $parameters = array())
-	{
-		$reflection = new \ReflectionClass($className);
-		$method = $reflection->getMethod($methodName);
-		$method->setAccessible(true);
-
-		return $method->invokeArgs($object, $parameters);
-	}
-
 	function setUp() {
 	}
 
@@ -97,7 +61,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 			}
 		}';
 		$parameters = json_decode($json);
-		$this->invokeMethod($calc, 'assignParameters', array($parameters));
+		TestHelper::invokeMethod($calc, 'assignParameters', array($parameters));
 		$result = $calc->renderForm(array());
 		$expected = '/<form name="foo" id="shortcalc-form-foo"><label for="shortcalc_([0-9]*)">A<\/label><input required="1" id="shortcalc_([0-9]*)" name="a" value="" type="text"  \/><label for="shortcalc_([0-9]*)">B<\/label><input required="1" id="shortcalc_([0-9]*)" name="b" value="" type="text"  \/><label for="shortcalc_([0-9]*)"><\/label><input value="Find C" type="submit" id="shortcalc_([0-9]*)" name="submit"  \/><\/form><div id="shortcalc-form-result-foo"><\/div><script type="text\/html" id="tmpl-calculator-result-foo">   <p>{{data.result}}<\/p><\/script>/';
 		$this->assertRegExp($expected, $result);
@@ -128,7 +92,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		}';
 		$parameters = json_decode($json);
 		$overrides = array("a" => "3.14", "b" => "1337");
-		$this->invokeMethod($calc, 'assignParameters', array($parameters));
+		TestHelper::invokeMethod($calc, 'assignParameters', array($parameters));
 		$result = $calc->renderForm($overrides);
 		$expected = '/<form name="foo" id="shortcalc-form-foo"><label for="shortcalc_([0-9]*)">A<\/label><input required="1" id="shortcalc_([0-9]*)" name="a" value="3.14" type="text"  \/><label for="shortcalc_([0-9]*)">B<\/label><input required="1" id="shortcalc_([0-9]*)" name="b" value="1337" type="text"  \/><label for="shortcalc_([0-9]*)"><\/label><input value="Find C" type="submit" id="shortcalc_([0-9]*)" name="submit"  \/><\/form><div id="shortcalc-form-result-foo"><\/div><script type="text\/html" id="tmpl-calculator-result-foo">   <p>{{data.result}}<\/p><\/script>/';
 		$this->assertRegExp($expected, $result);
@@ -158,7 +122,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 			}
 		}';
 		$parameters = json_decode($json);
-		$result = $this->invokeMethod($calc, 'aggregateAttributes', array($parameters));
+		$result = TestHelper::invokeMethod($calc, 'aggregateAttributes', array($parameters));
 
 		$expected = json_decode($json);
 		$expected->a->allAttributes = 'required="1" ';
@@ -185,7 +149,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 			}
 		}';
 		$parameters = json_decode($json);
-		$result = $this->invokeMethod($calc, 'aggregateAttributes', array($parameters));
+		$result = TestHelper::invokeMethod($calc, 'aggregateAttributes', array($parameters));
 
 		$expected = json_decode($json);
 		$expected->a->allAttributes = '';
@@ -200,7 +164,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
 		$json = '{}';
 		$parameters = json_decode($json);
-		$result = $this->invokeMethod($calc, 'aggregateAttributes', array($parameters));
+		$result = TestHelper::invokeMethod($calc, 'aggregateAttributes', array($parameters));
 
 		$expected = json_decode($json);
 
@@ -208,7 +172,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 	}
 
 	public function test_create_parameter_only_name(){
-		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'createParameter', array('foo'));
+		$result = TestHelper::invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'createParameter', array('foo'));
 		$this->assertInstanceOf('\StdClass', $result);
 		$this->assertEquals('input', $result->element);
 		$this->assertEquals('', $result->prefix);
@@ -223,7 +187,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 	}
 
 	public function test_create_parameter_submit(){
-		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'createParameter', array('foo','input','submit'));
+		$result = TestHelper::invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'createParameter', array('foo','input','submit'));
 		$this->assertInstanceOf('\StdClass', $result);
 		$this->assertEquals('input', $result->element);
 		$this->assertEquals('', $result->prefix);
@@ -238,7 +202,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 	}
 
 	public function test_create_parameter_params(){
-		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'createParameter', array('foo','bar','quz','val'));
+		$result = TestHelper::invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'createParameter', array('foo','bar','quz','val'));
 		$this->assertInstanceOf('\StdClass', $result);
 		$this->assertEquals('bar', $result->element);
 		$this->assertEquals('', $result->prefix);
@@ -276,7 +240,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 			}
 		}';
 		$parameters = json_decode($json);
-		$this->invokeMethod($calc, 'assignParameters', array($parameters));
+		TestHelper::invokeMethod($calc, 'assignParameters', array($parameters));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 		$this->assertInstanceOf('\StdClass', $calc->parameters->a);
@@ -334,7 +298,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 			}
 		}';
 		$parameters = json_decode($json);
-		$this->invokeMethod($calc, 'assignParameters', array($parameters));
+		TestHelper::invokeMethod($calc, 'assignParameters', array($parameters));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 
@@ -363,7 +327,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 			}
 		}';
 		$parameters = json_decode($json);
-		$this->invokeMethod($calc, 'assignParameters', array($parameters));
+		TestHelper::invokeMethod($calc, 'assignParameters', array($parameters));
 
 		$this->assertEquals('a', $calc->parameters->a->label);
 	}
@@ -374,7 +338,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
 		$calc->formula = '{{a}}+{{b}}';
 
-		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 
@@ -420,10 +384,10 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
 		$calc->formula = '{{a}}+{{b}}';
 
-		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 
 		$params = array("a" => "3.14", "b" => "1337");
-		$this->invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
+		TestHelper::invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 
@@ -469,10 +433,10 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
 		$calc->formula = '{{a}}+{{b}}';
 
-		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 
 		$params = array("x" => "3.14", "y" => "1337");
-		$this->invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
+		TestHelper::invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 		$this->assertNull($calc->parameters->x);
@@ -486,7 +450,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
 		$calc->formula = '{{a}}+{{b}}';
 
-		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 
 		$params = array("a" => "3.14", "b" => "1337");
 		$calcParams = (object) [
@@ -497,7 +461,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 				'label' => ''
 			]
 		];
-		$this->invokeMethod($calc, 'mergeParameters', array($calcParams, $params));
+		TestHelper::invokeMethod($calc, 'mergeParameters', array($calcParams, $params));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 		$this->assertEquals('3.14', $calc->parameters->a->attributes->value);
@@ -508,10 +472,10 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
 		$calc->formula = '{{a}}+{{b}}';
 
-		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 
 		$params = array("a" => 3.14, "b" => 1337);
-		$this->invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
+		TestHelper::invokeMethod($calc, 'mergeParameters', array($calc->parameters, $params));
 
 		$this->assertInstanceOf('\StdClass', $calc->parameters);
 		$this->assertEquals('3.14', $calc->parameters->a->attributes->value);
@@ -524,7 +488,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc = new ShortCalc\Calculators\CalculatorCore('foo');
 		$calc->formulaParser = ShortCalc\IoC::newFormulaParser('\\ShortCalc\\FormulaParsers\\HoaMath');
 		$calc->formula = '{{a}}*{{b}}';
-		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 		$this->expectOutputString('6');
 		_disable_wp_die();
 		$calc->renderResult();
@@ -539,7 +503,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->formula = '{{a}}*{{b}}';
 		$calc->resultDecimalSep = ',';
 		$calc->resultThousandsSep = '.';
-		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 		$this->expectOutputString('60.094,0308');
 		_disable_wp_die();
 		$calc->renderResult();
@@ -554,7 +518,7 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 		$calc->formula = '{{a}}*{{b}}';
 		$calc->resultDecimalSep = ',';
 		$calc->resultThousandsSep = '.';
-		$this->invokeMethod($calc, 'assignParameters', array(array()));
+		TestHelper::invokeMethod($calc, 'assignParameters', array(array()));
 		$this->expectOutputString('60.094,0308');
 		_disable_wp_die();
 		$calc->renderResult();
@@ -563,19 +527,19 @@ class CalculatorCore_Test extends WP_UnitTestCase {
 
 	function test_format_parameter_value(){
 		$value = '1,2';
-		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
+		$result = TestHelper::invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
 		$this->assertEquals(1.2, $result);
 
 		$value = '1.000.000,2000000';
-		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
+		$result = TestHelper::invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
 		$this->assertEquals(1000000.2, $result);
 
 		$value = '1,000,000,2';
-		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
+		$result = TestHelper::invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
 		$this->assertEquals(1000000.2, $result);
 
 		$value = '1.000.000,2';
-		$result = $this->invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
+		$result = TestHelper::invokeMethodByClassName('ShortCalc\Calculators\CalculatorCore', 'formatParameterValue', array($value));
 		$this->assertEquals(1000000.2, $result);
 	}
 }

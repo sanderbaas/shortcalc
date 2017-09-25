@@ -15,4 +15,5 @@ if ( false !== getenv( 'WP_DEVELOP_DIR' ) ) {
     require_once __DIR__ . '/../vendor/webdevstudios/cmb2/init.php';
   });
   require_once getenv( 'WP_DEVELOP_DIR' ) . 'tests/phpunit/includes/bootstrap.php';
+  require_once __DIR__ . '/includes/functions.php';
 }
