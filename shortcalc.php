@@ -7,7 +7,7 @@ Plugin Name: ShortCalc
 Plugin URI: https://www.implode.nl/shortcalc
 Description: This plugin makes shortcodes available with which calculator forms can be shown on pages or widgets.
 Author: Sander Baas
-Version: 0.3.4
+Version: 0.3.5
 Author URI: https://www.implode.nl/
 Text Domain: shortcalc
 Domain Path: /languages
